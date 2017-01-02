@@ -3,11 +3,7 @@ extends Node
 var INNS = 1
 var SALOONS = 3
 
-var WASTELAND = 0
-var SALOON = 1
-var INN = 2
-var WALL = 3
-var WALL_DESTROY = 4
+var CONSTANTS
 
 var area_w = 8
 var area_h = 8
@@ -16,10 +12,10 @@ var branched_dir = Vector2(0, 0)
 var branching_dir = Vector2(0, 0)
 
 func set_loc(loc):
-	set_pos(loc * 32)
+	set_pos(loc * Vector2(area_w, area_h) * CONSTANTS.room_size)
 
 func get_loc():
-	return get_pos() / 32
+	return get_pos() / (Vector2(area_w, area_h) * CONSTANTS.room_size)
 
 func is_branched():
 	return branched
@@ -40,7 +36,7 @@ func pick_room():
 				if(xx < 0 or yy < 0 or xx >= area_w or yy >= area_h):
 					continue
 				var lin_pos = xx + yy * area_w
-				if(get_node("Room" + str(lin_pos)).get_room_type() != WASTELAND):
+				if(get_node("Room" + str(lin_pos)).get_room_type() != CONSTANTS.WASTELAND):
 					nearby_room = true
 					break
 			if(nearby_room):
@@ -52,10 +48,10 @@ func pick_room():
 func fill_wastelands(room):
 	for i in range(area_w * area_h):
 		var node = room.instance()
-		node.set_name("Room" + str(i))
-		node.get_node("Sprite").set_pos(Vector2((i % area_w) * 4, int(i / area_h) * 4))
-		node.set_room_type(WASTELAND)
 		add_child(node)
+		node.set_name("Room" + str(i))
+		node.set_loc(Vector2(i % area_w, int(i / area_h)))
+		node.set_room_type(CONSTANTS.WASTELAND)
 
 func place_saloons(room):
 	var alt_tex = load("res://Sprites/room.png")
@@ -63,8 +59,7 @@ func place_saloons(room):
 	for saloons in range(SALOONS):
 		var room_pos = pick_room()
 		var linear_room_pos = room_pos.x + room_pos.y * area_w
-		get_node("Room" + str(linear_room_pos)).get_node("Sprite").set_texture(alt_tex)
-		get_node("Room" + str(linear_room_pos)).set_room_type(SALOON)
+		get_node("Room" + str(linear_room_pos)).set_room_type(CONSTANTS.SALOON)
 
 func place_inns(room):
 	var alt_tex_2 = load("res://Sprites/room2.png")
@@ -72,8 +67,7 @@ func place_inns(room):
 	for inns in range(INNS):
 		var room_pos = pick_room()
 		var linear_room_pos = room_pos.x + room_pos.y * area_w
-		get_node("Room" + str(linear_room_pos)).get_node("Sprite").set_texture(alt_tex_2)
-		get_node("Room" + str(linear_room_pos)).set_room_type(INN)
+		get_node("Room" + str(linear_room_pos)).set_room_type(CONSTANTS.INN)
 
 func add_walls_on_side(direction):
 	if(branched_dir == -direction):
@@ -81,49 +75,59 @@ func add_walls_on_side(direction):
 	
 	var wall_tex = load("res://Sprites/room_wall.png")
 	var wall_destroy_tex = load("res://Sprites/room_destructible_wall.png")
-	var type = WALL
 	var tex = wall_tex
 	if(branching_dir == direction):
-		type = WALL_DESTROY
 		tex = wall_destroy_tex
 	if(direction == Vector2(0, -1)):
 		for pos in range(1, area_w - 1):
-			get_node("Room" + str(pos)).get_node("Sprite").set_texture(tex)
-			get_node("Room" + str(pos)).set_room_type(type)
+			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_N)
+			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
+				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_N)
 	if(direction == Vector2(0, 1)):
 		for pos in range(area_w * (area_h - 1) + 1, area_w * area_h - 1):
-			get_node("Room" + str(pos)).get_node("Sprite").set_texture(tex)
-			get_node("Room" + str(pos)).set_room_type(type)
+			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_S)
+			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
+				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_S)
 	if(direction == Vector2(-1, 0)):
 		for pos in range(area_w, area_w * (area_h - 1), area_w):
-			get_node("Room" + str(pos)).get_node("Sprite").set_texture(tex)
-			get_node("Room" + str(pos)).set_room_type(type)
+			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_W)
+			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
+				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_W)
 	if(direction == Vector2(1, 0)):
 		for pos in range(area_w * 2 - 1, area_w * (area_h - 1), area_w):
-			get_node("Room" + str(pos)).get_node("Sprite").set_texture(tex)
-			get_node("Room" + str(pos)).set_room_type(type)
+			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_E)
+			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
+				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_E)
+
+func add_inside_corners():
+	var wall_tex = load("res://Sprites/room_wall.png")
+	get_node("Room" + str(0)).set_room_type(CONSTANTS.WALL_CORNER_NW)
+	get_node("Room" + str(area_w - 1)).set_room_type(CONSTANTS.WALL_CORNER_NE)
+	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(CONSTANTS.WALL_CORNER_SW)
+	get_node("Room" + str(area_w * area_h - 1)).set_room_type(CONSTANTS.WALL_CORNER_SE)
 
 func add_corners():
 	var wall_tex = load("res://Sprites/room_wall.png")
-	get_node("Room" + str(0)).get_node("Sprite").set_texture(wall_tex)
-	get_node("Room" + str(0)).set_room_type(WALL)
-	get_node("Room" + str(area_w - 1)).get_node("Sprite").set_texture(wall_tex)
-	get_node("Room" + str(area_w - 1)).set_room_type(WALL)
-	get_node("Room" + str(area_w * (area_h - 1))).get_node("Sprite").set_texture(wall_tex)
-	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(WALL)
-	get_node("Room" + str(area_w * area_h - 1)).get_node("Sprite").set_texture(wall_tex)
-	get_node("Room" + str(area_w * area_h - 1)).set_room_type(WALL)
+	get_node("Room" + str(0)).set_room_type(CONSTANTS.WALL_NW)
+	get_node("Room" + str(area_w - 1)).set_room_type(CONSTANTS.WALL_NE)
+	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(CONSTANTS.WALL_SW)
+	get_node("Room" + str(area_w * area_h - 1)).set_room_type(CONSTANTS.WALL_SE)
 
 func add_walls():
 	add_corners()
-	if(branched_dir == Vector2(0, 0)):
-		return
 	add_walls_on_side(Vector2(0, -1))
 	add_walls_on_side(Vector2(0, 1))
 	add_walls_on_side(Vector2(-1, 0))
 	add_walls_on_side(Vector2(1, 0))
 
+func translate_rooms(transform):
+	for i in range(area_w * area_h):
+		get_node("Room" + str(i)).set_loc( \
+		get_node("Room" + str(i)).get_loc() + transform)
+
 func _ready():
+	CONSTANTS = get_node("/root/WorldConstants")
+	
 	randomize()
 	
 	var room = load("res://Scenes/Room.tscn")

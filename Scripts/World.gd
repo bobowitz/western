@@ -42,37 +42,37 @@ func one_neighbor(loc, count):
 func generate_world():
 	var area = load("res://Scenes/Area.tscn")
 	
-	var center = Vector2(8, 8)
+	var center = Vector2(0, 0)
 	
 	var homeNode = area.instance()
+	add_child(homeNode)
 	homeNode.set_loc(center)
 	homeNode.set_name("Area0")
 	homeNode.set_branched(true)
-	add_child(homeNode)
 	
 	var leftNode = area.instance()
+	add_child(leftNode)
 	leftNode.set_loc(center + Vector2(-1, 0))
 	leftNode.set_name("Area1")
 	leftNode.branched_dir = Vector2(-1, 0)
-	add_child(leftNode)
 	
 	var rightNode = area.instance()
+	add_child(rightNode)
 	rightNode.set_loc(center + Vector2(1, 0))
 	rightNode.set_name("Area2")
 	rightNode.branched_dir = Vector2(1, 0)
-	add_child(rightNode)
 	
 	var upNode = area.instance()
+	add_child(upNode)
 	upNode.set_loc(center + Vector2(0, -1))
 	upNode.set_name("Area3")
 	upNode.branched_dir = Vector2(0, -1)
-	add_child(upNode)
 	
 	var downNode = area.instance()
+	add_child(downNode)
 	downNode.set_loc(center + Vector2(0, 1))
 	downNode.set_name("Area4")
 	downNode.branched_dir = Vector2(0, 1)
-	add_child(downNode)
 	
 	var count = 5
 	var areas = 25
@@ -99,12 +99,12 @@ func generate_world():
 				if(timeout == -1):
 					break
 				var node = area.instance()
+				add_child(node)
 				node.set_loc(new_node_loc)
 				node.set_name("Area" + str(count))
 				node.branched_dir = direction
 				get_node("Area" + str(j)).set_branched(true)
 				get_node("Area" + str(j)).branching_dir = direction
-				add_child(node)
 				added_area = true
 				break
 		if(added_area):
@@ -124,6 +124,10 @@ func update_areas():
 	for i in range(area_count):
 		get_node("Area" + str(i)).add_walls()
 
+func translate_areas(transform):
+	for i in range(area_count):
+		get_node("Area" + str(i)).translate_rooms(transform)
+
 func _ready():
 	generate_world()
 	update_areas()
@@ -134,3 +138,15 @@ func _input(event):
 		clear_world()
 		generate_world()
 		update_areas()
+	var transform = Vector2(0, 0)
+	if(event.is_action_pressed("ui_up")):
+		transform = Vector2(0, 2)
+	if(event.is_action_pressed("ui_down")):
+		transform = Vector2(0, -2)
+	if(event.is_action_pressed("ui_left")):
+		transform = Vector2(2, 0)
+	if(event.is_action_pressed("ui_right")):
+		transform = Vector2(-2, 0)
+	translate_areas(transform)
+	if(transform != Vector2(0, 0)):
+		print(transform)
