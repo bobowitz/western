@@ -1,11 +1,11 @@
 extends Node
 
-# 17 x 17 grid
+var area_count = 0
 
 func random_direction(bias):
-	var r = randi() % 4
 	var direction
 	while true:
+		var r = randi() % 4
 		if(r == 0):
 			direction = Vector2(0, -1)
 		elif(r == 1):
@@ -16,10 +16,15 @@ func random_direction(bias):
 			direction = Vector2(1, 0)
 		if(direction != bias):
 			break
-		else:
-			if(randf() < 0.25):
-				break
+		elif(randf() < 0.25):
+			break
 	return direction
+
+func has_area(loc, count):
+	for i in range(count):
+		if(get_node("Area" + str(i)).get_loc() == loc):
+			return true
+	return false
 
 func one_neighbor(loc, count):
 	var neighbors = 0
@@ -32,65 +37,100 @@ func one_neighbor(loc, count):
 			neighbors += 1
 		elif(get_node("Area" + str(i)).get_loc() == loc + Vector2(1, 0)):
 			neighbors += 1
-		elif(get_node("Area" + str(i)).get_loc() == loc):
-			neighbors += 1
-	return neighbors == 1
+	return neighbors <= 2
 
 func generate_world():
 	var area = load("res://Scenes/Area.tscn")
 	
+	var center = Vector2(8, 8)
+	
 	var homeNode = area.instance()
-	homeNode.set_loc(Vector2(8, 8))
+	homeNode.set_loc(center)
 	homeNode.set_name("Area0")
 	homeNode.set_branched(true)
 	add_child(homeNode)
 	
 	var leftNode = area.instance()
-	leftNode.set_loc(Vector2(7, 8))
+	leftNode.set_loc(center + Vector2(-1, 0))
 	leftNode.set_name("Area1")
 	leftNode.branched_dir = Vector2(-1, 0)
 	add_child(leftNode)
 	
 	var rightNode = area.instance()
-	rightNode.set_loc(Vector2(9, 8))
+	rightNode.set_loc(center + Vector2(1, 0))
 	rightNode.set_name("Area2")
 	rightNode.branched_dir = Vector2(1, 0)
 	add_child(rightNode)
 	
 	var upNode = area.instance()
-	upNode.set_loc(Vector2(8, 7))
+	upNode.set_loc(center + Vector2(0, -1))
 	upNode.set_name("Area3")
 	upNode.branched_dir = Vector2(0, -1)
 	add_child(upNode)
 	
 	var downNode = area.instance()
-	downNode.set_loc(Vector2(8, 9))
+	downNode.set_loc(center + Vector2(0, 1))
 	downNode.set_name("Area4")
 	downNode.branched_dir = Vector2(0, 1)
 	add_child(downNode)
 	
 	var count = 5
-	var areas = 20
-	for i in range(areas - 5):
-		for j in range(count): # find an available branching point
+	var areas = 25
+	var i = 0
+	while i < areas - 5:
+		var added_area = false
+		for j in range(max(1, count - 4), count): # find an available branching point
 			if(not get_node("Area" + str(j)).is_branched()):
 				var loc = get_node("Area" + str(j)).get_loc()
 				var new_node_loc
 				var can_place = false
 				var direction
+				var timeout = 0
 				while not can_place:
 					direction = random_direction(get_node("Area" + str(j)).branched_dir)
-					if(one_neighbor(Vector2(loc.x, loc.y) + direction, count)):
+					if(not has_area(Vector2(loc.x, loc.y) + direction, count) \
+					and one_neighbor(Vector2(loc.x, loc.y) + direction, count)):
 						new_node_loc = loc + direction
 						can_place = true
+					timeout += 1
+					if(timeout > 100):
+						timeout = -1
+						break
+				if(timeout == -1):
+					break
 				var node = area.instance()
 				node.set_loc(new_node_loc)
 				node.set_name("Area" + str(count))
 				node.branched_dir = direction
 				get_node("Area" + str(j)).set_branched(true)
+				get_node("Area" + str(j)).branching_dir = direction
 				add_child(node)
+				added_area = true
 				break
-		count += 1
+		if(added_area):
+			count += 1
+			i += 1
+		else:
+			i -= 1
+	area_count = count
+
+func clear_world():
+	for i in range(area_count):
+		var remove_node = get_node("Area" + str(i))
+		remove_child(remove_node)
+		remove_node.queue_free()
+
+func update_areas():
+	for i in range(area_count):
+		get_node("Area" + str(i)).add_walls()
 
 func _ready():
 	generate_world()
+	update_areas()
+	set_process_input(true)
+
+func _input(event):
+	if(event.is_action_pressed("ui_select")):
+		clear_world()
+		generate_world()
+		update_areas()
