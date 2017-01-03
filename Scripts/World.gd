@@ -1,6 +1,7 @@
 extends Node
 
 var area_count = 0
+var current_room
 
 func random_direction(bias):
 	var direction
@@ -140,13 +141,13 @@ func _input(event):
 		update_areas()
 	var transform = Vector2(0, 0)
 	if(event.is_action_pressed("ui_up")):
-		transform = Vector2(0, 2)
+		transform = Vector2(0, 1)
 	if(event.is_action_pressed("ui_down")):
-		transform = Vector2(0, -2)
+		transform = Vector2(0, -1)
 	if(event.is_action_pressed("ui_left")):
-		transform = Vector2(2, 0)
+		transform = Vector2(1, 0)
 	if(event.is_action_pressed("ui_right")):
-		transform = Vector2(-2, 0)
+		transform = Vector2(-1, 0)
 	translate_areas(transform)
 	if(transform != Vector2(0, 0)):
 		print(transform)

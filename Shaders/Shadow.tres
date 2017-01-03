@@ -1,0 +1,6 @@
+[gd_resource type="CanvasItemShader" format=1]
+
+[resource]
+
+_code = { "fragment":"uniform vec2 tex_size;\nuniform vec2 sprite_pos; // on tileset texture\nuniform vec2 sprite_size;\nuniform vec4 shadow_color;\nuniform float shear_mag;\nuniform bool flipped; // horizontal\n\nvec2 norm_pos = sprite_pos / tex_size;\nvec2 norm_size = sprite_size / tex_size;\n//vec2 roundUV = UV;\n//convert to sprite coordinates\n//shear\n//adjust for scale\n//convert back\nfloat adj_shear_mag = max(1, shear_mag) * sprite_size.y / sprite_size.x;\nvec2 spriteUV = UV * tex_size; // in pixels\nvec2 shear;\nif(flipped){\n\t//spriteUV.x = sprite_size.x - spriteUV.x;\n\tshear = vec2(spriteUV.x * 2 * adj_shear_mag - shear_mag * (sprite_size.y - spriteUV.y + 1), spriteUV.y);\n}\nelse {\n\tshear = vec2(spriteUV.x * 2 * adj_shear_mag - shear_mag * (spriteUV.y + 1), spriteUV.y);\n}\nshear = (shear + sprite_pos) / tex_size;\n\nvec4 col = tex(TEXTURE, shear);\nif(col.a > 0.0 && norm_pos.x <= shear.x && shear.x < norm_pos.x + norm_size.x){\n\tCOLOR = shadow_color;\n}\nelse {\n\tCOLOR = vec4(0, 0, 0, 0);\n\t// use this for debugging to see the shadow texture bounds\n\t//COLOR = vec4(1, 0, 1, 0.25);\n}", "fragment_ofs":0, "light":"", "light_ofs":0, "vertex":"", "vertex_ofs":0 }
+

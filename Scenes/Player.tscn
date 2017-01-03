@@ -1,5 +1,25 @@
-[gd_scene format=1]
+[gd_scene load_steps=6 format=1]
+
+[ext_resource path="res://Sprites/playerset.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Animation.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/PlayerControl.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/Shadow.tscn" type="PackedScene" id=5]
 
 [node name="Player" type="Sprite"]
+
+transform/pos = Vector2( 379.436, 229.479 )
+transform/scale = Vector2( 1, 1 )
+texture = ExtResource( 1 )
+centered = false
+vframes = 32
+hframes = 32
+script/script = ExtResource( 2 )
+
+[node name="Animation" parent="." instance=ExtResource( 3 )]
+
+[node name="PlayerControl" parent="." instance=ExtResource( 4 )]
+
+[node name="Shadow" parent="." instance=ExtResource( 5 )]
 
 

@@ -54,16 +54,12 @@ func fill_wastelands(room):
 		node.set_room_type(CONSTANTS.WASTELAND)
 
 func place_saloons(room):
-	var alt_tex = load("res://Sprites/room.png")
-	
 	for saloons in range(SALOONS):
 		var room_pos = pick_room()
 		var linear_room_pos = room_pos.x + room_pos.y * area_w
 		get_node("Room" + str(linear_room_pos)).set_room_type(CONSTANTS.SALOON)
 
 func place_inns(room):
-	var alt_tex_2 = load("res://Sprites/room2.png")
-	
 	for inns in range(INNS):
 		var room_pos = pick_room()
 		var linear_room_pos = room_pos.x + room_pos.y * area_w
@@ -72,12 +68,6 @@ func place_inns(room):
 func add_walls_on_side(direction):
 	if(branched_dir == -direction):
 		return
-	
-	var wall_tex = load("res://Sprites/room_wall.png")
-	var wall_destroy_tex = load("res://Sprites/room_destructible_wall.png")
-	var tex = wall_tex
-	if(branching_dir == direction):
-		tex = wall_destroy_tex
 	if(direction == Vector2(0, -1)):
 		for pos in range(1, area_w - 1):
 			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_N)
@@ -107,7 +97,6 @@ func add_inside_corners():
 	get_node("Room" + str(area_w * area_h - 1)).set_room_type(CONSTANTS.WALL_CORNER_SE)
 
 func add_corners():
-	var wall_tex = load("res://Sprites/room_wall.png")
 	get_node("Room" + str(0)).set_room_type(CONSTANTS.WALL_NW)
 	get_node("Room" + str(area_w - 1)).set_room_type(CONSTANTS.WALL_NE)
 	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(CONSTANTS.WALL_SW)
