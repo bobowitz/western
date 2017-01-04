@@ -60,8 +60,8 @@ func _process(delta):
 		elif(OS.get_ticks_msec() - start_time < FADE_OUT_TIME + DARK_TIME + FADE_IN_TIME):
 			if(last_frame_dark):
 				emit_signal("transition_fade_in")
-				last_frame_fade_out = false
-			frame = (total_frames) * (1.0 - ((OS.get_ticks_msec() - start_time - (DARK_TIME + FADE_OUT_TIME)) / FADE_IN_TIME))
+				last_frame_dark = false
+			frame = (total_frames) * (1.0 - ((OS.get_ticks_msec() - start_time - (DARK_TIME + FADE_OUT_TIME)) / FADE_IN_TIME)) - 1
 		else:
 			emit_signal("transition_done")
 			playing = false

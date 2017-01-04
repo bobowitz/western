@@ -8,6 +8,8 @@ extends Node
 # For non-looping animations, play() pushes the animation on top of the
 # current animation. When it finishes, it is popped.
 
+signal animation_finished
+
 var __animations = {} # dictionary of all existing animations
 var __stack = [] # stack of playing animations, 0th index is 'top'
 				 # this contains names, which are Strings
@@ -56,6 +58,8 @@ func _process(delta):
 				__stack.pop_front()
 			else:
 				frameIndex = __animations[__stack[0]].get_frames().size() - 1
+				if(not __done):
+					emit_signal("animation_finished")
 				__done = true
 	var frame = __animations[__stack[0]].get_frames()[frameIndex]
 	get_parent().set_frame(frame)

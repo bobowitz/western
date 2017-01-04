@@ -30,6 +30,9 @@ func _ready():
 
 func _fixed_process(delta):
 	if(not frozen):
+		speed = 150.0
+		if(Input.is_key_pressed(KEY_SHIFT)):
+			speed = 400.0
 		var translate = Vector2(0, 0)
 		if(Input.is_key_pressed(KEY_W)):
 			translate += Vector2(0, -1)

@@ -135,10 +135,6 @@ func _ready():
 	add_child(areas[current_area_index])
 
 func _input(event):
-	if(event.is_action_pressed("ui_select")):
-		clear_world()
-		generate_world()
-		finish_areas()
 	var transform = Vector2(0, 0)
 	if(event.is_action_pressed("ui_up")):
 		transform = Vector2(0, 1)
@@ -201,5 +197,4 @@ func _on_transition_dark():
 	get_node("/root/Game/Player").translate(-delay_out_dir * WorldConstants.room_size)
 
 func _on_transition_fade_in():
-	print("unfreeze")
 	get_node("../Player/PlayerControl").unfreeze()

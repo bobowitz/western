@@ -20,6 +20,7 @@ func set_room_type(r):
 	if(r == WorldConstants.SALOON):
 		get_node("Background").set_texture(RoomTextures.saloon_tex)
 		add_child(Hitboxes.saloon.instance())
+		add_child(Hitboxes.saloon_bullet.instance())
 	elif(r == WorldConstants.INN):
 		get_node("Background").set_texture(RoomTextures.inn_tex)
 	elif(r == WorldConstants.WALL_N):
