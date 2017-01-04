@@ -60,8 +60,3 @@ func set_room_type(r):
 	elif(r == WorldConstants.WALL_DESTROY_E):
 		get_node("Background").set_texture(RoomTextures.wall_destroy_w_tex)
 		get_node("Background").set_flip_h(true)
-
-func _on_body_exit(body):
-	print("exit body")
-	if(body == get_node("../../../../Player")):
-		print("wow")

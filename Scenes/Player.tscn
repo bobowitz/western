@@ -15,7 +15,7 @@ extents = Vector2( 10, 3 )
 
 input/pickable = false
 shapes/0/shape = SubResource( 2 )
-shapes/0/transform = Matrix32( 1, 0, 0, 1, 13, 34 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, 16, 44 )
 shapes/0/trigger = false
 collision/layers = 1
 collision/mask = 1
@@ -23,7 +23,6 @@ collision/margin = 1.0
 
 [node name="Sprite" type="Sprite" parent="."]
 
-transform/pos = Vector2( -3, -9 )
 texture = ExtResource( 1 )
 centered = false
 vframes = 32
@@ -47,7 +46,7 @@ playback/speed = 1.0
 
 [node name="Feet" type="CollisionShape2D" parent="."]
 
-transform/pos = Vector2( 13, 34 )
+transform/pos = Vector2( 16, 44 )
 shape = SubResource( 2 )
 trigger = false
 _update_shape_index = 0
