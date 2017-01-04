@@ -3,8 +3,6 @@ extends Node
 var INNS = 1
 var SALOONS = 3
 
-var CONSTANTS
-
 var area_w = 8
 var area_h = 8
 var branched = false
@@ -12,10 +10,10 @@ var branched_dir = Vector2(0, 0)
 var branching_dir = Vector2(0, 0)
 
 func set_loc(loc):
-	set_pos(loc * Vector2(area_w, area_h) * CONSTANTS.room_size)
+	set_pos(loc * Vector2(area_w, area_h) * WorldConstants.room_size)
 
 func get_loc():
-	return get_pos() / (Vector2(area_w, area_h) * CONSTANTS.room_size)
+	return get_pos() / (Vector2(area_w, area_h) * WorldConstants.room_size)
 
 func is_branched():
 	return branched
@@ -36,7 +34,7 @@ func pick_room():
 				if(xx < 0 or yy < 0 or xx >= area_w or yy >= area_h):
 					continue
 				var lin_pos = xx + yy * area_w
-				if(get_node("Room" + str(lin_pos)).get_room_type() != CONSTANTS.WASTELAND):
+				if(get_node("Room" + str(lin_pos)).get_room_type() != WorldConstants.WASTELAND):
 					nearby_room = true
 					break
 			if(nearby_room):
@@ -51,56 +49,56 @@ func fill_wastelands(room):
 		add_child(node)
 		node.set_name("Room" + str(i))
 		node.set_loc(Vector2(i % area_w, int(i / area_h)))
-		node.set_room_type(CONSTANTS.WASTELAND)
+		node.set_room_type(WorldConstants.WASTELAND)
 
 func place_saloons(room):
 	for saloons in range(SALOONS):
 		var room_pos = pick_room()
 		var linear_room_pos = room_pos.x + room_pos.y * area_w
-		get_node("Room" + str(linear_room_pos)).set_room_type(CONSTANTS.SALOON)
+		get_node("Room" + str(linear_room_pos)).set_room_type(WorldConstants.SALOON)
 
 func place_inns(room):
 	for inns in range(INNS):
 		var room_pos = pick_room()
 		var linear_room_pos = room_pos.x + room_pos.y * area_w
-		get_node("Room" + str(linear_room_pos)).set_room_type(CONSTANTS.INN)
+		get_node("Room" + str(linear_room_pos)).set_room_type(WorldConstants.INN)
 
 func add_walls_on_side(direction):
 	if(branched_dir == -direction):
 		return
 	if(direction == Vector2(0, -1)):
 		for pos in range(1, area_w - 1):
-			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_N)
+			get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_N)
 			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
-				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_N)
+				get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_DESTROY_N)
 	if(direction == Vector2(0, 1)):
 		for pos in range(area_w * (area_h - 1) + 1, area_w * area_h - 1):
-			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_S)
+			get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_S)
 			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
-				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_S)
+				get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_DESTROY_S)
 	if(direction == Vector2(-1, 0)):
 		for pos in range(area_w, area_w * (area_h - 1), area_w):
-			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_W)
+			get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_W)
 			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
-				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_W)
+				get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_DESTROY_W)
 	if(direction == Vector2(1, 0)):
 		for pos in range(area_w * 2 - 1, area_w * (area_h - 1), area_w):
-			get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_E)
+			get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_E)
 			if(direction == branching_dir or branched_dir == Vector2(0, 0)):
-				get_node("Room" + str(pos)).set_room_type(CONSTANTS.WALL_DESTROY_E)
+				get_node("Room" + str(pos)).set_room_type(WorldConstants.WALL_DESTROY_E)
 
 func add_inside_corners():
 	var wall_tex = load("res://Sprites/room_wall.png")
-	get_node("Room" + str(0)).set_room_type(CONSTANTS.WALL_CORNER_NW)
-	get_node("Room" + str(area_w - 1)).set_room_type(CONSTANTS.WALL_CORNER_NE)
-	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(CONSTANTS.WALL_CORNER_SW)
-	get_node("Room" + str(area_w * area_h - 1)).set_room_type(CONSTANTS.WALL_CORNER_SE)
+	get_node("Room" + str(0)).set_room_type(WorldConstants.WALL_CORNER_NW)
+	get_node("Room" + str(area_w - 1)).set_room_type(WorldConstants.WALL_CORNER_NE)
+	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(WorldConstants.WALL_CORNER_SW)
+	get_node("Room" + str(area_w * area_h - 1)).set_room_type(WorldConstants.WALL_CORNER_SE)
 
 func add_corners():
-	get_node("Room" + str(0)).set_room_type(CONSTANTS.WALL_NW)
-	get_node("Room" + str(area_w - 1)).set_room_type(CONSTANTS.WALL_NE)
-	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(CONSTANTS.WALL_SW)
-	get_node("Room" + str(area_w * area_h - 1)).set_room_type(CONSTANTS.WALL_SE)
+	get_node("Room" + str(0)).set_room_type(WorldConstants.WALL_NW)
+	get_node("Room" + str(area_w - 1)).set_room_type(WorldConstants.WALL_NE)
+	get_node("Room" + str(area_w * (area_h - 1))).set_room_type(WorldConstants.WALL_SW)
+	get_node("Room" + str(area_w * area_h - 1)).set_room_type(WorldConstants.WALL_SE)
 
 func add_walls():
 	add_corners()
@@ -114,12 +112,15 @@ func translate_rooms(transform):
 		get_node("Room" + str(i)).set_loc( \
 		get_node("Room" + str(i)).get_loc() + transform)
 
-func _ready():
-	CONSTANTS = get_node("/root/WorldConstants")
-	
+func translate_rooms_tween(transform, speed):
+	for i in range(area_w * area_h):
+		get_node("Room" + str(i)).set_loc_tween( \
+		get_node("Room" + str(i)).get_loc() + transform, speed)
+
+func _init():
 	randomize()
 	
-	var room = load("res://Scenes/Room.tscn")
+	var room = preload("res://Scenes/Room.tscn")
 	
 	fill_wastelands(room)
 	place_saloons(room)

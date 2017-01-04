@@ -12,4 +12,11 @@ script/script = ExtResource( 1 )
 texture = ExtResource( 2 )
 centered = false
 
+[node name="Tween" type="Tween" parent="."]
+
+playback/process_mode = 1
+playback/active = false
+playback/repeat = false
+playback/speed = 1.0
+
 

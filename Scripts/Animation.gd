@@ -60,6 +60,7 @@ func _process(delta):
 	var frame = __animations[__stack[0]].get_frames()[frameIndex]
 	get_parent().set_frame(frame)
 	get_parent().set_flip_h(__animations[__stack[0]].get_flipped())
+	return
 
 class Animation:
 	var __frames

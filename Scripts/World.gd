@@ -1,6 +1,8 @@
 extends Node
 
-var area_count = 0
+var areas = []
+var current_area_index = 0
+var area_count = 15
 var current_room
 
 func random_direction(bias):
@@ -23,72 +25,71 @@ func random_direction(bias):
 
 func has_area(loc, count):
 	for i in range(count):
-		if(get_node("Area" + str(i)).get_loc() == loc):
+		if(areas[i].get_loc() == loc):
 			return true
 	return false
 
 func one_neighbor(loc, count):
 	var neighbors = 0
 	for i in range(count):
-		if(get_node("Area" + str(i)).get_loc() == loc + Vector2(0, -1)):
+		if(areas[i].get_loc() == loc + Vector2(0, -1)):
 			neighbors += 1
-		elif(get_node("Area" + str(i)).get_loc() == loc + Vector2(0, 1)):
+		elif(areas[i].get_loc() == loc + Vector2(0, 1)):
 			neighbors += 1
-		elif(get_node("Area" + str(i)).get_loc() == loc + Vector2(-1, 0)):
+		elif(areas[i].get_loc() == loc + Vector2(-1, 0)):
 			neighbors += 1
-		elif(get_node("Area" + str(i)).get_loc() == loc + Vector2(1, 0)):
+		elif(areas[i].get_loc() == loc + Vector2(1, 0)):
 			neighbors += 1
 	return neighbors <= 2
 
 func generate_world():
-	var area = load("res://Scenes/Area.tscn")
+	var area = preload("res://Scenes/Area.tscn")
 	
 	var center = Vector2(0, 0)
 	
 	var homeNode = area.instance()
-	add_child(homeNode)
 	homeNode.set_loc(center)
 	homeNode.set_name("Area0")
 	homeNode.set_branched(true)
+	areas.push_back(homeNode)
 	
 	var leftNode = area.instance()
-	add_child(leftNode)
 	leftNode.set_loc(center + Vector2(-1, 0))
 	leftNode.set_name("Area1")
 	leftNode.branched_dir = Vector2(-1, 0)
+	areas.push_back(leftNode)
 	
 	var rightNode = area.instance()
-	add_child(rightNode)
 	rightNode.set_loc(center + Vector2(1, 0))
 	rightNode.set_name("Area2")
 	rightNode.branched_dir = Vector2(1, 0)
+	areas.push_back(rightNode)
 	
 	var upNode = area.instance()
-	add_child(upNode)
 	upNode.set_loc(center + Vector2(0, -1))
 	upNode.set_name("Area3")
 	upNode.branched_dir = Vector2(0, -1)
+	areas.push_back(upNode)
 	
 	var downNode = area.instance()
-	add_child(downNode)
 	downNode.set_loc(center + Vector2(0, 1))
 	downNode.set_name("Area4")
 	downNode.branched_dir = Vector2(0, 1)
+	areas.push_back(downNode)
 	
 	var count = 5
-	var areas = 25
 	var i = 0
-	while i < areas - 5:
+	while i < area_count - 5:
 		var added_area = false
 		for j in range(max(1, count - 4), count): # find an available branching point
-			if(not get_node("Area" + str(j)).is_branched()):
-				var loc = get_node("Area" + str(j)).get_loc()
+			if(not areas[j].is_branched()):
+				var loc = areas[j].get_loc()
 				var new_node_loc
 				var can_place = false
 				var direction
 				var timeout = 0
 				while not can_place:
-					direction = random_direction(get_node("Area" + str(j)).branched_dir)
+					direction = random_direction(areas[j].branched_dir)
 					if(not has_area(Vector2(loc.x, loc.y) + direction, count) \
 					and one_neighbor(Vector2(loc.x, loc.y) + direction, count)):
 						new_node_loc = loc + direction
@@ -100,45 +101,47 @@ func generate_world():
 				if(timeout == -1):
 					break
 				var node = area.instance()
-				add_child(node)
 				node.set_loc(new_node_loc)
 				node.set_name("Area" + str(count))
 				node.branched_dir = direction
-				get_node("Area" + str(j)).set_branched(true)
-				get_node("Area" + str(j)).branching_dir = direction
+				areas.push_back(node)
+				
+				areas[j].set_branched(true)
+				areas[j].branching_dir = direction
 				added_area = true
+				
 				break
 		if(added_area):
 			count += 1
 			i += 1
 		else:
 			i -= 1
-	area_count = count
+	if(count != area_count):
+		print("FAILED TO GENERATE AREAS, COUNT != AREA_COUNT")
 
 func clear_world():
 	for i in range(area_count):
-		var remove_node = get_node("Area" + str(i))
-		remove_child(remove_node)
-		remove_node.queue_free()
+		areas[i].queue_free()
 
-func update_areas():
+func finish_areas():
 	for i in range(area_count):
-		get_node("Area" + str(i)).add_walls()
+		areas[i].add_walls()
 
 func translate_areas(transform):
 	for i in range(area_count):
-		get_node("Area" + str(i)).translate_rooms(transform)
+		areas[i].translate_rooms(transform)
 
 func _ready():
 	generate_world()
-	update_areas()
+	finish_areas()
 	set_process_input(true)
+	add_child(areas[current_area_index])
 
 func _input(event):
 	if(event.is_action_pressed("ui_select")):
 		clear_world()
 		generate_world()
-		update_areas()
+		finish_areas()
 	var transform = Vector2(0, 0)
 	if(event.is_action_pressed("ui_up")):
 		transform = Vector2(0, 1)
@@ -148,6 +151,35 @@ func _input(event):
 		transform = Vector2(1, 0)
 	if(event.is_action_pressed("ui_right")):
 		transform = Vector2(-1, 0)
-	translate_areas(transform)
 	if(transform != Vector2(0, 0)):
-		print(transform)
+		translate_areas(transform)
+
+func _on_area_body_exit(body):
+	var player = get_node("/root/Game/Player")
+	if(body == player):
+		print("player exited")
+		var out_dir = Vector2(0, 0)
+		if(get_node("OutOfBoundsUp").overlaps_body(player) \
+		and player.get_node("PlayerControl").direction.y == -1):
+			out_dir.y = -1
+		if(get_node("OutOfBoundsDown").overlaps_body(player) \
+		and player.get_node("PlayerControl").direction.y == 1):
+			out_dir.y = 1
+		if(get_node("OutOfBoundsLeft").overlaps_body(player) \
+		and player.get_node("PlayerControl").direction.x == -1):
+			out_dir.x = -1
+		if(get_node("OutOfBoundsRight").overlaps_body(player) \
+		and player.get_node("PlayerControl").direction.x == 1):
+			out_dir.x = 1
+		player.get_node("PlayerControl").translate_tween( \
+				-out_dir * WorldConstants.room_size, \
+				WorldConstants.ROOM_CHANGE_TWEEN_SPEED)
+		var out_of_bounds = areas[current_area_index].translate_rooms_tween( \
+				-out_dir, WorldConstants.ROOM_CHANGE_TWEEN_SPEED)
+		print(out_dir)
+		if(out_dir == Vector2(0, 0)):
+			print(get_node("OutOfBoundsUp").overlaps_body(player))
+			print(get_node("OutOfBoundsDown").overlaps_body(player))
+			print(get_node("OutOfBoundsLeft").overlaps_body(player))
+			print(get_node("OutOfBoundsRight").overlaps_body(player))
+			print(player.get_node("PlayerControl").direction)
