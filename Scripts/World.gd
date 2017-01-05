@@ -6,6 +6,12 @@ var current_area_index = 0
 var area_count = 15
 var current_room
 
+func get_screen_area():
+	var index = current_area_index
+	if(old_area_index != current_area_index): # transitioning, use old area
+		index = old_area_index
+	return areas[index].get_current_room().get_node("ScreenArea")
+
 func random_direction(bias):
 	var direction
 	while true:
@@ -133,6 +139,8 @@ func _ready():
 	finish_areas()
 	set_process_input(true)
 	add_child(areas[current_area_index])
+	areas[current_area_index].add_area_hitboxes()
+	areas[current_area_index].get_current_room().get_node("ScreenArea").connect("body_exit", self, "_on_area_body_exit")
 
 func _input(event):
 	var transform = Vector2(0, 0)
@@ -150,51 +158,56 @@ func _input(event):
 var delay_out_dir = Vector2(0, 0)
 func _on_area_body_exit(body):
 	var player = get_node("/root/Game/Player")
+	var r = areas[current_area_index].get_current_room()
 	if(body == player):
-		print("player exited")
 		var out_dir = Vector2(0, 0)
-		if(get_node("OutOfBoundsUp").overlaps_body(player) \
+		if(r.get_node("OutOfBoundsUp").overlaps_body(player) \
 		and player.get_node("PlayerControl").direction.y == -1):
 			out_dir.y = -1
-		if(get_node("OutOfBoundsDown").overlaps_body(player) \
+		if(r.get_node("OutOfBoundsDown").overlaps_body(player) \
 		and player.get_node("PlayerControl").direction.y == 1):
 			out_dir.y = 1
-		if(get_node("OutOfBoundsLeft").overlaps_body(player) \
+		if(r.get_node("OutOfBoundsLeft").overlaps_body(player) \
 		and player.get_node("PlayerControl").direction.x == -1):
 			out_dir.x = -1
-		if(get_node("OutOfBoundsRight").overlaps_body(player) \
+		if(r.get_node("OutOfBoundsRight").overlaps_body(player) \
 		and player.get_node("PlayerControl").direction.x == 1):
 			out_dir.x = 1
-		print(get_node("OutOfBoundsUp").overlaps_body(player))
-		print(get_node("OutOfBoundsDown").overlaps_body(player))
-		print(get_node("OutOfBoundsLeft").overlaps_body(player))
-		print(get_node("OutOfBoundsRight").overlaps_body(player))
-		print(player.get_pos())
 		var out_of_area = areas[current_area_index].check_out_of_area(-out_dir)
 		if(not out_of_area):
-			player.get_node("PlayerControl").translate_tween( \
-					-out_dir * WorldConstants.room_size, \
-					WorldConstants.ROOM_CHANGE_TWEEN_SPEED)
-			var out_of_area = areas[current_area_index].translate_rooms_tween( \
-					-out_dir, WorldConstants.ROOM_CHANGE_TWEEN_SPEED)
+			r.get_node("ScreenArea").disconnect("body_exit", self, "_on_area_body_exit")
+			get_node("../Player/PlayerControl").freeze()
+			get_node("/root/Game/Camera").move_rooms_tween(out_dir)
+			areas[current_area_index].get_current_room().get_node("ScreenArea").connect("body_exit", self, "_on_area_body_exit")
 		else:
 			for i in range(area_count): # find correct area
 				if(areas[current_area_index].get_loc() + out_dir == areas[i].get_loc()):
+					areas[old_area_index].get_current_room().get_node("ScreenArea").disconnect("body_exit", self, "_on_area_body_exit")
 					old_area_index = current_area_index
-					areas[i].translate_rooms(areas[current_area_index].room_transform - out_dir + out_dir * \
-						Vector2(WorldConstants.AREA_W, WorldConstants.AREA_H))
-					delay_out_dir = out_dir
 					current_area_index = i
+					delay_out_dir = out_dir
 					
 					get_node("Transition").start()
 					get_node("../Player/PlayerControl").freeze()
 					break
 
 func _on_transition_dark():
+	areas[old_area_index].remove_area_hitboxes()
 	remove_child(areas[old_area_index])
-	areas[old_area_index].reset_room_transforms() # so when we reload it'll be where we expect it
+	
+	old_area_index = current_area_index
+	
+	get_node("/root/Game/Camera").move_rooms(-delay_out_dir * (WorldConstants.AREA_SIZE - Vector2(1, 1)))
+	
 	add_child(areas[current_area_index])
-	get_node("/root/Game/Player").translate(-delay_out_dir * WorldConstants.room_size)
+	areas[current_area_index].add_area_hitboxes()
+	areas[current_area_index].get_current_room().get_node("ScreenArea").connect("body_exit", self, "_on_area_body_exit")
+	get_node("/root/Game/Player").translate(-delay_out_dir * WorldConstants.ROOM_SIZE * WorldConstants.AREA_SIZE)
+	print("finished dark")
 
 func _on_transition_fade_in():
+	print("fading in")
+	get_node("../Player/PlayerControl").unfreeze()
+
+func _on_camera_tween_finished():
 	get_node("../Player/PlayerControl").unfreeze()

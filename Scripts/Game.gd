@@ -3,16 +3,16 @@ extends Node
 var fullscreen = true
 
 func _ready():
-	var w = WorldConstants.room_size.x
-	var h = WorldConstants.room_size.y
+	var w = WorldConstants.ROOM_SIZE.x
+	var h = WorldConstants.ROOM_SIZE.y
 	
 	self.get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, \
-									   SceneTree.STRETCH_ASPECT_KEEP, WorldConstants.room_size)
+									   SceneTree.STRETCH_ASPECT_KEEP, WorldConstants.ROOM_SIZE)
 	OS.set_window_fullscreen(fullscreen)
 	if(fullscreen):
 		OS.set_window_size(OS.get_screen_size())
 	else:
-		OS.set_window_size(WorldConstants.room_size)
+		OS.set_window_size(WorldConstants.ROOM_SIZE)
 	OS.set_window_resizable(false)
 	set_process(true)
 

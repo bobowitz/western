@@ -3,6 +3,8 @@ extends Node
 # Player Control
 # deals with input + animations
 
+signal player_control_input
+
 var frozen = false
 var speed = 150.0
 var direction = Vector2(0, 0)
@@ -13,20 +15,16 @@ func freeze():
 func unfreeze():
 	frozen = false
 
-func translate_tween(transform, speed):
-	freeze()
-	get_node("../Sprite/Animation").play("idle")
-	get_node("Tween").interpolate_method(get_parent(), \
-		"set_pos", \
-		get_parent().get_pos(), get_parent().get_pos() + transform, \
-		speed, Tween.TRANS_LINEAR, Tween.EASE_IN)
-	get_node("Tween").start()
-
 func get_direction():
 	return direction
 
 func _ready():
 	set_fixed_process(true)
+	set_process_input(true)
+
+func _input(event):
+	if(not frozen):
+		emit_signal("player_control_input", event)
 
 func _fixed_process(delta):
 	if(not frozen):

@@ -1,6 +1,6 @@
 extends KinematicBody2D
 
-var SPEED = 750.0
+var SPEED = 1500.0
 var angle = 0
 var out_of_bounds_time = 0
 var velocity = Vector2(0, 0)
@@ -29,7 +29,7 @@ func _fixed_process(delta):
 	if(is_colliding()):
 		kill()
 		return
-	if(not get_node("../ScreenArea").overlaps_body(self)):
+	if(not get_parent().get_screen_area().overlaps_body(self)):
 		out_of_bounds_time += 1
 		if(out_of_bounds_time >= 5):
 			kill()

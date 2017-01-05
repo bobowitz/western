@@ -4,35 +4,32 @@ var INNS = 1
 var SALOONS = 3
 
 var loc = Vector2(0, 0) # location on grid, in units of areas
+						# position of actual area object is always 0, 0
 var room_transform = Vector2(0, 0)
 var branched = false
 var branched_dir = Vector2(0, 0)
 var branching_dir = Vector2(0, 0)
 
-func reset_room_transforms():
-	room_transform = Vector2(0, 0)
+func add_area_hitboxes():
 	for i in range(WorldConstants.AREA_W * WorldConstants.AREA_H):
-		get_node("Room" + str(i)).set_loc( \
-		Vector2(i % WorldConstants.AREA_W, int(i / WorldConstants.AREA_H)))
+		get_node("Room" + str(i)).add_room_hitboxes()
 
-func translate_rooms(transform):
-	room_transform += transform
+func remove_area_hitboxes():
 	for i in range(WorldConstants.AREA_W * WorldConstants.AREA_H):
-		get_node("Room" + str(i)).set_loc( \
-		get_node("Room" + str(i)).get_loc() + transform)
+		get_node("Room" + str(i)).remove_room_hitboxes()
 
 func check_out_of_area(transform):
 	var out_of_bounds = true
 	for i in range(WorldConstants.AREA_W * WorldConstants.AREA_H):
-		if(get_node("Room" + str(i)).get_loc() + transform == Vector2(0, 0)):
+		if(get_node("Room" + str(i)).get_loc() + transform == get_node("/root/Game/Camera").get_room_pos()):
 			out_of_bounds = false
 	return out_of_bounds
 
-func translate_rooms_tween(transform, speed):
-	room_transform += transform
+func get_current_room():
 	for i in range(WorldConstants.AREA_W * WorldConstants.AREA_H):
-		get_node("Room" + str(i)).set_loc_tween( \
-		get_node("Room" + str(i)).get_loc() + transform, speed)
+		if(get_node("Room" + str(i)).get_loc() == get_node("/root/Game/Camera").get_room_pos()):
+			return get_node("Room" + str(i))
+	return null
 
 func set_loc(l):
 	loc = l

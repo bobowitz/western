@@ -1,4 +1,4 @@
-extends Node2D
+extends CanvasLayer
 
 # 16x16 tiles
 
@@ -20,6 +20,9 @@ var total_frames = 0
 var playing = false
 
 func start():
+	if(playing):
+		print("TRANSITION ALREADY PLAYING!")
+		return
 	emit_signal("transition_start")
 	playing = true
 	for sprite in sprites:
@@ -31,13 +34,13 @@ func _ready():
 	connect("transition_fade_in", get_parent(), "_on_transition_fade_in")
 	
 	tex = preload("res://Sprites/transition_tileset.png")
-	for x in range(0, WorldConstants.room_size.x, tile_size.x):
-		for y in range(0, WorldConstants.room_size.y, tile_size.y):
+	for x in range(0, WorldConstants.ROOM_SIZE.x, tile_size.x):
+		for y in range(0, WorldConstants.ROOM_SIZE.y, tile_size.y):
 			var sprite = Sprite.new()
 			sprite.set_centered(false)
 			sprite.set_texture(tex)
-			sprite.set_hframes(frames_per_tile)
 			sprite.set_pos(Vector2(x, y))
+			sprite.set_hframes(frames_per_tile)
 			sprite.set_z(5)
 			sprites.push_back(sprite)
 	total_frames = frames_per_tile + 1
@@ -68,7 +71,6 @@ func _process(delta):
 			for sprite in sprites:
 				remove_child(sprite)
 			return
-		
 		for sprite in sprites:
 			sprite.set_hidden(frame < 1)
 			sprite.set_frame(max(0, frame - 1))

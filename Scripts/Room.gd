@@ -1,16 +1,36 @@
 extends Node
 
 var room_type
+var screen_hitbox
+var up_hitbox
+var down_hitbox
+var left_hitbox
+var right_hitbox
+
+func add_room_hitboxes():
+	add_child(screen_hitbox.instance())
+	add_child(up_hitbox.instance())
+	add_child(down_hitbox.instance())
+	add_child(left_hitbox.instance())
+	add_child(right_hitbox.instance())
+
+func remove_room_hitboxes():
+	get_node("ScreenArea").queue_free()
+	remove_child(get_node("ScreenArea"))
+	get_node("OutOfBoundsUp").queue_free()
+	remove_child(get_node("OutOfBoundsUp"))
+	get_node("OutOfBoundsDown").queue_free()
+	remove_child(get_node("OutOfBoundsDown"))
+	get_node("OutOfBoundsLeft").queue_free()
+	remove_child(get_node("OutOfBoundsLeft"))
+	get_node("OutOfBoundsRight").queue_free()
+	remove_child(get_node("OutOfBoundsRight"))
 
 func set_loc(loc):
-	set_pos(loc * WorldConstants.room_size)
-
-func set_loc_tween(loc, speed):
-	get_node("Tween").interpolate_method(self, "set_pos", get_pos(), loc * WorldConstants.room_size, speed, Tween.TRANS_LINEAR, Tween.EASE_IN)
-	get_node("Tween").start()
+	set_pos(loc * WorldConstants.ROOM_SIZE)
 
 func get_loc():
-	return (get_pos() / WorldConstants.room_size).floor()
+	return (get_pos() / WorldConstants.ROOM_SIZE).floor()
 
 func get_room_type():
 	return room_type
@@ -61,3 +81,10 @@ func set_room_type(r):
 	elif(r == WorldConstants.WALL_DESTROY_E):
 		get_node("Background").set_texture(RoomTextures.wall_destroy_w_tex)
 		get_node("Background").set_flip_h(true)
+
+func _ready():
+	screen_hitbox = preload("res://Scenes/Hitboxes/ScreenArea.tscn")
+	up_hitbox = preload("res://Scenes/Hitboxes/OutOfBoundsUp.tscn")
+	down_hitbox = preload("res://Scenes/Hitboxes/OutOfBoundsDown.tscn")
+	left_hitbox = preload("res://Scenes/Hitboxes/OutOfBoundsLeft.tscn")
+	right_hitbox = preload("res://Scenes/Hitboxes/OutOfBoundsRight.tscn")

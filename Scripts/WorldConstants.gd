@@ -1,11 +1,10 @@
 extends Node
 
-var room_size = Vector2(576, 384)
-
-var ROOM_CHANGE_TWEEN_SPEED = 0.5
+var ROOM_SIZE = Vector2(576, 384)
 
 var AREA_W = 8
 var AREA_H = 8
+var AREA_SIZE = Vector2(AREA_W, AREA_H)
 
 var WASTELAND = 0
 var SALOON = 1
