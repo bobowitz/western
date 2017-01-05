@@ -27,17 +27,20 @@ func _ready():
 
 func _input(event):
 	if(event.is_action_pressed("ui_select")):
-		open = not open
 		if(open):
-			update()
-			get_node("../../PlayerControl").freeze()
-		else:
+			open = false
 			update()
 			get_node("../../PlayerControl").unfreeze()
+		elif(not get_node("../../PlayerControl").frozen):
+			open = true
+			update()
+			get_node("../../PlayerControl").freeze()
 
 func _draw():
 	if(open):
 		var index = 0
+		draw_string(font, Vector2(WorldConstants.ROOM_SIZE.x / 2 - 32, \
+		WorldConstants.ROOM_SIZE.y / 2 - GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) / 2 - 16), "Inventory", Color(0, 0, 0))
 		for y in range(WorldConstants.ROOM_SIZE.y / 2 - GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) / 2, \
 					   WorldConstants.ROOM_SIZE.y / 2 + GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) / 2, \
 					   BOX_SIZE.y + GAP_SIZE.y):
