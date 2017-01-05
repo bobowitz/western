@@ -42,6 +42,10 @@ func place_items():
 		var inst = item.instance()
 		inst.set_pos(Vector2(floor(rand_range(32, WorldConstants.ROOM_SIZE.x - 32)), \
 		floor(rand_range(32, WorldConstants.ROOM_SIZE.y - 32))))
+		if(randf() < 0.5):
+			inst.set_ID(ItemConstants.CRATE)
+		else:
+			inst.set_ID(ItemConstants.BIGCRATE)
 		add_child(inst)
 
 func set_room_type(r):

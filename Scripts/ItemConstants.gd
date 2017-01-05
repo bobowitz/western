@@ -1,4 +1,5 @@
 extends Node
 
-var ITEMS = 1
-var CRATE = 0
+var ITEMS = 25
+var CRATE = 0 # constant refers to frame on tileset
+var BIGCRATE = 10

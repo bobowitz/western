@@ -19,3 +19,4 @@ inventory
 saloon fights
 saloon mobs
 guns
+font

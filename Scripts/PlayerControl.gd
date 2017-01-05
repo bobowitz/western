@@ -10,6 +10,7 @@ var speed = 150.0
 var direction = Vector2(0, 0)
 
 func freeze():
+	get_node("../Sprite/Animation").play("idle")
 	frozen = true
 
 func unfreeze():

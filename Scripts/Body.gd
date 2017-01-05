@@ -7,4 +7,4 @@ func _on_body_enter(body):
 	if(body.is_in_group("items")):
 		print("item")
 		body.kill()
-		get_node("../Inventory").add_item(body)
+		get_node("../HUD/Inventory").add_item(body) # yeah this seems kinda stupid but it works so
