@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=1]
+[gd_scene load_steps=11 format=1]
 
 [ext_resource path="res://Sprites/playerset.png" type="Texture" id=1]
 [ext_resource path="res://Scripts/Player.gd" type="Script" id=2]
@@ -6,20 +6,27 @@
 [ext_resource path="res://Scenes/Shadow.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scripts/PlayerControl.gd" type="Script" id=5]
 [ext_resource path="res://Scenes/Guns/Revolver.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scripts/Body.gd" type="Script" id=7]
+[ext_resource path="res://Scripts/Inventory.gd" type="Script" id=8]
 
 [sub_resource type="RectangleShape2D" id=1]
 
 custom_solver_bias = 0.0
 extents = Vector2( 10, 3 )
 
+[sub_resource type="RectangleShape2D" id=2]
+
+custom_solver_bias = 0.0
+extents = Vector2( 9, 20 )
+
 [node name="Player" type="KinematicBody2D"]
 
-z/z = 1
+z/z = 3
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 16, 44 )
 shapes/0/trigger = false
-collision/layers = 1
+collision/layers = 2
 collision/mask = 1
 collision/margin = 1.0
 
@@ -35,7 +42,7 @@ script/script = ExtResource( 2 )
 
 [node name="Shadow" parent="Sprite" instance=ExtResource( 4 )]
 
-z/z = -1
+z/z = -2
 
 [node name="PlayerControl" type="Node" parent="."]
 
@@ -49,5 +56,34 @@ trigger = false
 _update_shape_index = 0
 
 [node name="Weapon" parent="." instance=ExtResource( 6 )]
+
+z/z = 0
+
+[node name="Body" type="Area2D" parent="."]
+
+input/pickable = false
+shapes/0/shape = SubResource( 2 )
+shapes/0/transform = Matrix32( 1, 0, 0, 1, 16, 26 )
+shapes/0/trigger = false
+gravity_vec = Vector2( 0, 1 )
+gravity = 98.0
+linear_damp = 0.1
+angular_damp = 1.0
+collision/layers = 128
+collision/mask = 64
+script/script = ExtResource( 7 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
+
+transform/pos = Vector2( 16, 26 )
+shape = SubResource( 2 )
+trigger = false
+_update_shape_index = 0
+
+[node name="Inventory" type="Node" parent="."]
+
+script/script = ExtResource( 8 )
+
+[connection signal="body_enter" from="Body" to="Body" method="_on_body_enter"]
 
 

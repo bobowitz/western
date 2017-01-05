@@ -1,0 +1,21 @@
+wasteland variations
+	cactuses
+	cow skulls
+wall collision
+destructible walls
+wasteland mobs
+	snakes
+	rats
+enterable buildings
+	inns
+	saloons
+npc interactions
+items
+	gold
+	blueprints
+	scrap metal
+	bullets
+inventory
+saloon fights
+saloon mobs
+guns

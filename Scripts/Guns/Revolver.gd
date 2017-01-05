@@ -18,11 +18,10 @@ func shoot():
 func _ready():
 	bullet = preload("res://Scenes/Bullet.tscn")
 	
-	set_process(true)
+	set_fixed_process(true)
 	get_node("../PlayerControl").connect("player_control_input", self, "_on_player_control_input")
 
-func _process(delta):
-	#print(get_parent().get_pos().angle_to_point(get_viewport().get_mouse_pos()))
+func _fixed_process(delta):
 	angle = (get_pos() + get_parent().get_pos()). \
 	angle_to_point(get_viewport().get_mouse_pos() + get_node("/root/Game/Camera").get_pixel_pos())
 	if(-PI / 2 < angle and angle < PI / 2):
@@ -38,7 +37,6 @@ func _process(delta):
 		set_rot(angle + PI / 2 + recoil * PI / 8)
 		set_flip_h(false)
 		set_offset(Vector2(x_offset - recoil * 8, -16))
-	
 	recoil *= 0.85
 
 func _on_player_control_input(event):

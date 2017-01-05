@@ -37,9 +37,9 @@ func move_rooms(transform): # units are rooms
 	target_position = position
 
 func _ready():
-	set_process(true)
+	set_fixed_process(true)
 
-func _process(delta):
+func _fixed_process(delta):
 	var shake_offset = shake_mag
 	shake_mag *= -0.75
 	transform[2] = -position + shake_offset # move transform origin vector

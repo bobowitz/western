@@ -39,7 +39,7 @@ shapes/4/shape = SubResource( 3 )
 shapes/4/transform = Matrix32( 1, 0, 0, 1, 288, 326 )
 shapes/4/trigger = false
 collision/layers = 4
-collision/mask = 4
+collision/mask = 40
 collision/margin = 0.08
 
 [node name="Sprite" type="Sprite" parent="."]

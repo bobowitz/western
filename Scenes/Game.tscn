@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=1]
+[gd_scene load_steps=6 format=1]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Camera.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/World.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/Item.tscn" type="PackedScene" id=5]
 
 [node name="Game" type="Node2D"]
 
@@ -25,6 +26,7 @@ playback/speed = 1.0
 
 [node name="hud" type="CanvasLayer" parent="."]
 
+editor/display_folded = true
 layer = 1
 offset = Vector2( 0, 0 )
 rotation = 0.0
@@ -51,6 +53,50 @@ max_lines_visible = -1
 [node name="Player" parent="." instance=ExtResource( 4 )]
 
 transform/pos = Vector2( 146.008, 102.411 )
+
+[node name="Item" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 288, 158 )
+
+[node name="Item 2" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 308, 178 )
+
+[node name="Item3" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 323, 158 )
+
+[node name="Item4" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 308, 139 )
+
+[node name="Item5" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 333, 135 )
+
+[node name="Item6" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 345, 155 )
+
+[node name="Item7" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 368, 144 )
+
+[node name="Item8" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 361, 168 )
+
+[node name="Item9" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 350, 192 )
+
+[node name="Item10" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 334, 185 )
+
+[node name="Item11" parent="." instance=ExtResource( 5 )]
+
+transform/pos = Vector2( 375, 187 )
 
 [connection signal="tween_finished" from="Camera" to="World" method="_on_camera_tween_finished"]
 
