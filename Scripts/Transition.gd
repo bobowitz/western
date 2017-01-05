@@ -31,7 +31,7 @@ func start():
 
 func _ready():
 	connect("transition_dark", get_parent(), "_on_transition_dark")
-	connect("transition_fade_in", get_parent(), "_on_transition_fade_in")
+	connect("transition_done", get_parent(), "_on_transition_done")
 	
 	tex = preload("res://Sprites/transition_tileset.png")
 	for x in range(0, WorldConstants.ROOM_SIZE.x, tile_size.x):

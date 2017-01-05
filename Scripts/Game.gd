@@ -1,6 +1,6 @@
-extends Node
+extends Node2D
 
-var fullscreen = true
+var fullscreen = false
 
 func _ready():
 	var w = WorldConstants.ROOM_SIZE.x
