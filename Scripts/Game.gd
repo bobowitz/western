@@ -17,6 +17,6 @@ func _ready():
 	set_process(true)
 
 func _process(delta):
-	get_node("fps").set_text(str(OS.get_frames_per_second()))
+	get_node("hud/fps").set_text(str(OS.get_frames_per_second()))
 	if(Input.is_key_pressed(KEY_ESCAPE)):
 		get_tree().quit()

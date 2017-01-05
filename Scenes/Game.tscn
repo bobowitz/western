@@ -23,7 +23,14 @@ playback/speed = 1.0
 
 [node name="World" parent="." instance=ExtResource( 3 )]
 
-[node name="fps" type="Label" parent="."]
+[node name="hud" type="CanvasLayer" parent="."]
+
+layer = 1
+offset = Vector2( 0, 0 )
+rotation = 0.0
+scale = Vector2( 1, 1 )
+
+[node name="fps" type="Label" parent="hud"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
