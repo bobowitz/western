@@ -3,7 +3,7 @@ wasteland variations
 	cow skulls
 wall collision
 destructible walls
-wasteland mobs
+wasteland mobs (invisible spawners?)
 	snakes
 	rats
 enterable buildings

@@ -6,6 +6,7 @@ var up_hitbox
 var down_hitbox
 var left_hitbox
 var right_hitbox
+var item
 
 func add_room_hitboxes():
 	add_child(screen_hitbox.instance())
@@ -34,6 +35,14 @@ func get_loc():
 
 func get_room_type():
 	return room_type
+
+func place_items():
+	for i in range(3):
+		item = preload("res://Scenes/Item.tscn")
+		var inst = item.instance()
+		inst.set_pos(Vector2(floor(rand_range(32, WorldConstants.ROOM_SIZE.x - 32)), \
+		floor(rand_range(32, WorldConstants.ROOM_SIZE.y - 32))))
+		add_child(inst)
 
 func set_room_type(r):
 	room_type = r
@@ -81,6 +90,10 @@ func set_room_type(r):
 	elif(r == WorldConstants.WALL_DESTROY_E):
 		get_node("Background").set_texture(RoomTextures.wall_destroy_w_tex)
 		get_node("Background").set_flip_h(true)
+
+func finish_room():
+	if(room_type == WorldConstants.WASTELAND):
+		place_items()
 
 func _ready():
 	screen_hitbox = preload("res://Scenes/Hitboxes/ScreenArea.tscn")

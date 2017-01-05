@@ -85,6 +85,10 @@ func place_inns(room):
 		var linear_room_pos = room_pos.x + room_pos.y * WorldConstants.AREA_W
 		get_node("Room" + str(linear_room_pos)).set_room_type(WorldConstants.INN)
 
+func finish_rooms():
+	for i in range(WorldConstants.AREA_W * WorldConstants.AREA_H):
+		get_node("Room" + str(i)).finish_room()
+
 func add_walls_on_side(direction):
 	if(branched_dir == -direction):
 		return
@@ -128,6 +132,8 @@ func add_walls():
 	add_walls_on_side(Vector2(0, 1))
 	add_walls_on_side(Vector2(-1, 0))
 	add_walls_on_side(Vector2(1, 0))
+	
+	finish_rooms()
 
 func _init():
 	randomize()
