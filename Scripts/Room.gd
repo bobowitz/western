@@ -36,18 +36,6 @@ func get_loc():
 func get_room_type():
 	return room_type
 
-func place_items():
-	for i in range(3):
-		item = preload("res://Scenes/Item.tscn")
-		var inst = item.instance()
-		inst.set_pos(Vector2(floor(rand_range(32, WorldConstants.ROOM_SIZE.x - 32)), \
-		floor(rand_range(32, WorldConstants.ROOM_SIZE.y - 32))))
-		if(randf() < 0.5):
-			inst.set_ID(ItemConstants.CRATE)
-		else:
-			inst.set_ID(ItemConstants.BIGCRATE)
-		add_child(inst)
-
 func set_room_type(r):
 	room_type = r
 	if(r == WorldConstants.SALOON):
@@ -97,7 +85,7 @@ func set_room_type(r):
 
 func finish_room():
 	if(room_type == WorldConstants.WASTELAND):
-		place_items()
+		add_child(preload("res://Scenes/EnemySpawner.tscn").instance())
 
 func _ready():
 	screen_hitbox = preload("res://Scenes/Hitboxes/ScreenArea.tscn")
@@ -105,3 +93,15 @@ func _ready():
 	down_hitbox = preload("res://Scenes/Hitboxes/OutOfBoundsDown.tscn")
 	left_hitbox = preload("res://Scenes/Hitboxes/OutOfBoundsLeft.tscn")
 	right_hitbox = preload("res://Scenes/Hitboxes/OutOfBoundsRight.tscn")
+
+func _on_room_enter():
+	if(has_node("EnemySpawner")):
+		get_node("EnemySpawner")._on_room_enter()
+
+func _on_room_leave_defer():
+	if(has_node("EnemySpawner")):
+		get_node("EnemySpawner")._on_room_leave_defer()
+
+func _on_room_leave():
+	if(has_node("EnemySpawner")):
+		get_node("EnemySpawner")._on_room_leave()

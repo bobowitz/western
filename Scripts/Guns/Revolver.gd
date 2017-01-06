@@ -13,7 +13,9 @@ func shoot():
 	get_node("/root/Game/World").add_child(b)
 	
 	recoil = 1
-	get_parent().move(-Vector2(0, 2).rotated(angle + PI))
+	get_parent().move(-Vector2(0, 4).rotated(angle + PI))
+	
+	get_node("/root/Game/Camera").shake(Vector2(0, 5).rotated(angle + PI))
 
 func _ready():
 	bullet = preload("res://Scenes/Bullet.tscn")
@@ -42,5 +44,4 @@ func _fixed_process(delta):
 func _on_player_control_input(event):
 	if event.type == InputEvent.MOUSE_BUTTON:
 		if event.button_index == BUTTON_LEFT and event.pressed:
-				get_node("/root/Game/Camera").shake(Vector2(0, 10).rotated(angle + PI))
 				shoot()

@@ -26,6 +26,8 @@ func set_shear_mag(shear):
 	__shear_mag = shear
 
 func _ready():
+	set_material(get_material().duplicate())
+	
 	# size should be (w + h/2, h/2)
 	self.set_texture(get_parent().get_texture())
 	self.set_vframes(get_parent().get_vframes())

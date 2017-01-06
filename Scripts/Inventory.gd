@@ -1,9 +1,12 @@
 extends Node
 
-var GRID_WIDTH = 5.0
-var GRID_HEIGHT = 5.0
+var GRID_WIDTH = 6.0
+var GRID_HEIGHT = 3.0
 var BOX_SIZE = Vector2(32, 32)
 var GAP_SIZE = Vector2(2, 2)
+var BORDER = 2
+var GUI_COLOR = Color(0, 0, 0, 0) # no borders
+var BOX_COLOR = Color(0.2, 0.2, 0.25, 0.75)
 
 var items = [] # array of item counts. items[ID] = count
 var open = false
@@ -38,16 +41,35 @@ func _input(event):
 
 func _draw():
 	if(open):
+		var scr_center = WorldConstants.ROOM_SIZE / 2
+		var gui_size = Vector2(GRID_WIDTH * (BOX_SIZE.x + GAP_SIZE.x) - GAP_SIZE.x, \
+		GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) - GAP_SIZE.y)
 		var index = 0
-		draw_string(font, Vector2(WorldConstants.ROOM_SIZE.x / 2 - 32, \
-		WorldConstants.ROOM_SIZE.y / 2 - GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) / 2 - 16), "Inventory", Color(0, 0, 0))
-		for y in range(WorldConstants.ROOM_SIZE.y / 2 - GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) / 2, \
-					   WorldConstants.ROOM_SIZE.y / 2 + GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) / 2, \
+		draw_string(font, Vector2(scr_center.x - 32, \
+		scr_center.y - gui_size.y / 2 - 16), "Inventory", Color(1, 1, 1))
+		
+		draw_rect(Rect2(scr_center - gui_size / 2 - Vector2(BORDER, BORDER), Vector2(BORDER, gui_size.y + BORDER*2)), GUI_COLOR)
+		draw_rect(Rect2(scr_center - gui_size / 2 - Vector2(BORDER, BORDER), Vector2(gui_size.x + BORDER*2, BORDER)), GUI_COLOR)
+		draw_rect(Rect2(scr_center.x + gui_size.x / 2, scr_center.y - gui_size.y / 2 - BORDER, BORDER, gui_size.y + BORDER*2), GUI_COLOR)
+		draw_rect(Rect2(scr_center.x - gui_size.x / 2 - BORDER, scr_center.y + gui_size.y / 2, gui_size.x + BORDER*2, BORDER), GUI_COLOR)
+		
+		for y in range(scr_center.y - gui_size.y / 2 + BOX_SIZE.y, \
+					   scr_center.y + gui_size.y / 2, \
 					   BOX_SIZE.y + GAP_SIZE.y):
-			for x in range(WorldConstants.ROOM_SIZE.x / 2 - GRID_WIDTH * (BOX_SIZE.x + GAP_SIZE.x) / 2, \
-						   WorldConstants.ROOM_SIZE.x / 2 + GRID_WIDTH * (BOX_SIZE.x + GAP_SIZE.x) / 2, \
+			draw_rect(Rect2(scr_center.x - gui_size.x / 2 - BORDER, y, gui_size.x + BORDER*2, BORDER), GUI_COLOR)
+		
+		for x in range(scr_center.x - gui_size.x / 2 + BOX_SIZE.x, \
+					   scr_center.x + gui_size.x / 2, \
+					   BOX_SIZE.x + GAP_SIZE.x):
+			draw_rect(Rect2(x, scr_center.y - gui_size.y / 2 - BORDER, BORDER, gui_size.y + BORDER*2), GUI_COLOR)
+		
+		for y in range(scr_center.y - gui_size.y / 2, \
+					   scr_center.y + gui_size.y / 2, \
+					   BOX_SIZE.y + GAP_SIZE.y):
+			for x in range(scr_center.x - gui_size.x / 2, \
+						   scr_center.x + gui_size.x / 2, \
 						   BOX_SIZE.x + GAP_SIZE.x):
-				draw_rect(Rect2(x, y, BOX_SIZE.x, BOX_SIZE.y), Color(0, 0, 0, 0.5))
+				draw_rect(Rect2(x, y, BOX_SIZE.x, BOX_SIZE.y), BOX_COLOR)
 				while(index < items.size() and items[index] == 0):
 					index += 1
 				if(index == items.size()):

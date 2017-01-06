@@ -2,7 +2,7 @@ extends Node2D
 
 signal tween_finished
 
-var ROOM_CHANGE_TWEEN_SPEED = 0.5
+var ROOM_CHANGE_TWEEN_SPEED = 0.25
 var position = Vector2(0, 0) # in pixels
 var target_position = Vector2(0, 0) # in pixels
 var transform = Matrix32()
@@ -28,7 +28,7 @@ func move_rooms_tween(transform): # units are rooms
 	get_node("Tween").interpolate_method(self, \
 		"set_pixel_pos", \
 		get_pixel_pos(), get_pixel_pos() + transform * WorldConstants.ROOM_SIZE, \
-		ROOM_CHANGE_TWEEN_SPEED, Tween.TRANS_LINEAR, Tween.EASE_IN)
+		ROOM_CHANGE_TWEEN_SPEED, Tween.TRANS_CUBIC, Tween.EASE_OUT)
 	get_node("Tween").start()
 	target_position = get_pixel_pos() + transform * WorldConstants.ROOM_SIZE
 

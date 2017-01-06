@@ -27,6 +27,8 @@ func _ready():
 func _fixed_process(delta):
 	move(velocity * delta * SPEED)
 	if(is_colliding()):
+		if(get_collider().is_in_group("enemies")):
+			get_collider().hit()
 		kill()
 		return
 	if(not get_parent().get_screen_area().overlaps_body(self)):

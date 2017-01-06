@@ -41,8 +41,7 @@ func _fixed_process(delta):
 			translate += Vector2(-1, 0)
 		if(Input.is_key_pressed(KEY_D)):
 			translate += Vector2(1, 0)
-		if(translate != Vector2(0, 0)):
-			direction = translate
+		direction = translate
 		translate = translate.normalized()
 		get_parent().move(translate * speed * delta)
 		if(translate.x > 0):

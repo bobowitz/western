@@ -6,6 +6,8 @@ var AREA_W = 8
 var AREA_H = 8
 var AREA_SIZE = Vector2(AREA_W, AREA_H)
 
+var ENEMY_AREA = Rect2(64, 64, ROOM_SIZE.x - 64 * 2, ROOM_SIZE.y - 64 * 2)
+
 var WASTELAND = 0
 var SALOON = 1
 var INN = 2
