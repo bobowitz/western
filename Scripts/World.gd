@@ -6,6 +6,9 @@ var current_area_index = 0
 var area_count = 15
 var current_room
 
+func get_current_room():
+	return areas[current_area_index].get_current_room()
+
 func get_screen_area():
 	var index = current_area_index
 	if(old_area_index != current_area_index): # transitioning, use old area

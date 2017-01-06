@@ -8,6 +8,7 @@ signal player_control_input
 var frozen = false
 var speed = 150.0
 var direction = Vector2(0, 0)
+var knockback_velocity = Vector2(0, 0)
 
 func freeze():
 	get_node("../Sprite/Animation").play("idle")
@@ -23,12 +24,20 @@ func _ready():
 	set_fixed_process(true)
 	set_process_input(true)
 
+func knockback(knock_dir):
+	get_parent().move(knock_dir * 10)
+	knockback_velocity = knock_dir * 300
+
 func _input(event):
 	if(not frozen):
 		emit_signal("player_control_input", event)
 
 func _fixed_process(delta):
-	if(not frozen):
+	get_parent().move(knockback_velocity * delta)
+	knockback_velocity *= 0.85
+	if(not frozen and abs(knockback_velocity.x) < 10 and abs(knockback_velocity.y) < 10):
+		knockback_velocity = Vector2(0, 0)
+		
 		speed = 150.0
 		if(Input.is_key_pressed(KEY_SHIFT)):
 			speed = 400.0

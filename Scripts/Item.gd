@@ -8,6 +8,7 @@ var kill_anim
 var velocity = Vector2(0, 0)
 var start_velocity_y = 0
 var ground_y = 0
+var spawned = false
 
 func set_ID(id):
 	ID = id
@@ -46,20 +47,42 @@ func kill(): # if picked up
 	get_parent().add_child(k)
 	despawn()
 
+func set_spawn_delay(delay):
+	if(delay < 0.01):
+		delay = 0.01
+	get_node("SpawnDelayTimer").set_wait_time(delay)
+
+func spawn():
+	get_node("DespawnTimer").start()
+	
+	spawned = true
+	
+	ground_y = get_pos().y + rand_range(-10, 10)
+	velocity = Vector2(rand_range(-100, 100), rand_range(-200, -300))
+	start_velocity_y = velocity.y
+	
+	get_node("Sprite").set_hidden(false)
+
 func _ready():
 	kill_anim = preload("res://Scenes/ItemKill.tscn")
 	
-	ground_y = get_pos().y + rand_range(-32, 32)
-	velocity = Vector2(rand_range(-100, 100), rand_range(-400, -600))
-	start_velocity_y = velocity.y
+	get_node("Sprite").set_hidden(true)
+	set_scale(Vector2(0, 0))
+	
 	set_fixed_process(true)
 	set_process(true)
 
 func _process(delta):
-	if(get_node("Timer").get_time_left() < FLICKER_TIME):
+	if(not spawned):
+		return
+	
+	if(get_node("DespawnTimer").get_time_left() < FLICKER_TIME):
 		get_node("Sprite").set_hidden(OS.get_ticks_msec() % (FLICKER_SPEED * 2) <= FLICKER_SPEED)
 
 func _fixed_process(delta):
+	if(not spawned):
+		return
+	
 	translate(velocity * delta)
 	
 	if(velocity.y < 0):
@@ -76,3 +99,6 @@ func _fixed_process(delta):
 
 func _on_timer_timeout():
 	despawn()
+
+func _on_spawn_delay_timer_timeout():
+	spawn()

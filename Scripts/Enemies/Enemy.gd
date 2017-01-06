@@ -4,12 +4,16 @@ signal on_kill
 
 var health = 3
 
+func get_center():
+	return get_parent().get_parent().get_pos() + get_pos() + get_shape(0).get_extents()
+
 func spawn_items():
 	var drops = [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 3, 4]
 	var item_count = randi() % drops.size()
 	for i in range(drops[item_count]):
 		var inst = preload("res://Scenes/Item.tscn").instance()
 		inst.set_pos(get_pos() + Vector2(16, 32))
+		inst.set_spawn_delay(i * .1)
 		var r = randi() % ItemConstants.ITEMS
 		if(r == 0):
 			inst.set_ID(ItemConstants.CRATE)
