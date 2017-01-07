@@ -10,6 +10,7 @@ func _fixed_process(delta):
 	for body in get_overlapping_bodies():
 		if(body.is_in_group("enemies")):
 			get_node("../PlayerControl").knockback((get_center() - body.get_center()).normalized())
+			get_node("../Health").hurt(0)
 			get_node("../InvulnTimer").start()
 			set_collision_mask_bit(4, false) # don't collide with enemies
 			set_collision_mask_bit(5, false) # don't collide with enemy bullets

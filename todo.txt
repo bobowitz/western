@@ -1,22 +1,27 @@
+TO DO
 wasteland variations
 	cactuses
 	cow skulls
 wall collision
 destructible walls
+npc interactions
+saloon fights
+saloon mobs
+guns
+font
+
+IN PROGRESS
 wasteland mobs (invisible spawners?)
 	snakes
 	rats
 enterable buildings
 	inns
 	saloons
-npc interactions
+inventory
 items
 	gold
 	blueprints
 	scrap metal
 	bullets
-inventory
-saloon fights
-saloon mobs
-guns
-font
+
+DONE

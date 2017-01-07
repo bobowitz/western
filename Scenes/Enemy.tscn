@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=1]
+[gd_scene load_steps=9 format=1]
 
 [ext_resource path="res://Scripts/Enemies/Enemy.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/mobset.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://Scenes/Animation.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Scenes/Shadow.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Scripts/Enemies/EnemyControl.gd" type="Script" id=6]
+[ext_resource path="res://Scenes/Health.tscn" type="PackedScene" id=7]
 
 [sub_resource type="RectangleShape2D" id=2]
 
@@ -64,8 +65,12 @@ wait_time = 2.5
 one_shot = false
 autostart = true
 
+[node name="Health" parent="." instance=ExtResource( 7 )]
+
 [connection signal="timeout" from="Sprite/FlashTimer" to="Sprite" method="_on_flash_timer_timeout"]
 
 [connection signal="timeout" from="EnemyControl/Timer" to="EnemyControl" method="_on_timer_timeout"]
+
+[connection signal="killed" from="Health" to="." method="_on_killed"]
 
 

@@ -2,8 +2,6 @@ extends KinematicBody2D
 
 signal on_kill
 
-var health = 3
-
 func get_center():
 	return get_parent().get_parent().get_pos() + get_pos() + get_shape(0).get_extents()
 
@@ -44,7 +42,12 @@ func kill():
 
 func hit():
 	get_node("Sprite").flash()
-	health -= 1
-	if(health <= 0):
-		emit_signal("on_kill", self)
-		kill()
+	get_node("Health").hurt(1)
+
+func _ready():
+	get_node("Health").set_full_hp(3)
+	get_node("Health").set_hp(3)
+
+func _on_killed():
+	emit_signal("on_kill", self)
+	kill()
