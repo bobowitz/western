@@ -29,7 +29,7 @@ shapes/0/transform = Matrix32( 1, 0, 0, 1, 16, 44 )
 shapes/0/trigger = false
 collision/layers = 2
 collision/mask = 1
-collision/margin = 1.0
+collision/margin = 0.08
 
 [node name="Sprite" type="Sprite" parent="."]
 
@@ -84,7 +84,6 @@ _update_shape_index = 0
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
-editor/display_folded = true
 layer = 1
 offset = Vector2( 0, 0 )
 rotation = 0.0
@@ -104,5 +103,7 @@ autostart = false
 [node name="Health" parent="." instance=ExtResource( 9 )]
 
 [connection signal="timeout" from="InvulnTimer" to="Body" method="_on_invuln_timer_timeout"]
+
+[connection signal="killed" from="Health" to="Body" method="_on_killed"]
 
 

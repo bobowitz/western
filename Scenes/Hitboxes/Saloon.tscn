@@ -25,7 +25,6 @@ b = Vector2( 30, 0 )
 
 [node name="Saloon" type="KinematicBody2D"]
 
-editor/display_folded = true
 input/pickable = false
 shapes/0/shape = SubResource( 1 )
 shapes/0/transform = Matrix32( 1, 0, 0, 1, 288, 171.5 )
@@ -55,7 +54,7 @@ shapes/8/shape = SubResource( 4 )
 shapes/8/transform = Matrix32( 1, 0, 0, 1, 162, 289 )
 shapes/8/trigger = false
 collision/layers = 1
-collision/mask = 1
+collision/mask = 0
 collision/margin = 0.08
 
 [node name="Main" type="CollisionShape2D" parent="."]

@@ -2,6 +2,8 @@ extends KinematicBody2D
 
 signal on_kill
 
+var dead = false
+
 func get_center():
 	return get_parent().get_parent().get_pos() + get_pos() + get_shape(0).get_extents()
 
@@ -25,6 +27,8 @@ func spawn_items():
 			inst.set_ID(ItemConstants.CRATE5)
 		elif(r == 5):
 			inst.set_ID(ItemConstants.BIGCRATE)
+		elif(r == 6):
+			inst.set_ID(ItemConstants.FLASK)
 		get_parent().get_parent().add_child(inst)
 
 func kill():
@@ -37,6 +41,7 @@ func kill():
 	k.set_frame(get_node("Sprite").get_frame())
 	k.set_pos(get_pos())
 	get_parent().add_child(k)
+	
 	queue_free()
 	get_parent().remove_child(self)
 
@@ -45,9 +50,10 @@ func hit():
 	get_node("Health").hurt(1)
 
 func _ready():
-	get_node("Health").set_full_hp(3)
-	get_node("Health").set_hp(3)
+	get_node("Health").set_full_hp(10)
+	get_node("Health").set_hp(10)
 
 func _on_killed():
+	dead = true
 	emit_signal("on_kill", self)
 	kill()

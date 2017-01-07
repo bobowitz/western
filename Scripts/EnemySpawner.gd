@@ -1,12 +1,12 @@
 extends Node
 
-var MAX_ENEMIES = 4
-var enemy
+var MAX_ENEMIES = 5
+var MIN_ENEMIES = 0
 
 func place_enemies():
-	var r = randi() % (MAX_ENEMIES + 1)
+	var r = randi() % (MAX_ENEMIES + 1 - MIN_ENEMIES) + MIN_ENEMIES
 	for i in range(r):
-		var e = enemy.instance()
+		var e = preload("res://Scenes/Enemies/SkullEnemy.tscn").instance()
 		var position = Vector2(0, 0)
 		while(!WorldConstants.ENEMY_AREA.has_point(position)):
 			position = Vector2(floor(rand_range(WorldConstants.ENEMY_AREA.pos.x, WorldConstants.ENEMY_AREA.pos.x + WorldConstants.ENEMY_AREA.size.x)), \
@@ -28,9 +28,6 @@ func remove_enemies_defer():
 			e.call_deferred("queue_free")
 			call_deferred("remove_child", "e")
 
-func _ready():
-	enemy = preload("res://Scenes/Enemy.tscn")
-
 func _on_room_enter():
 	place_enemies()
 
@@ -41,4 +38,5 @@ func _on_room_leave_defer():
 	remove_enemies_defer()
 
 func _on_child_killed(enemy):
-	print("child killed")
+	pass
+	# do something with respawn times

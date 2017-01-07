@@ -8,7 +8,7 @@ extends Sprite
 
 var sprite_size
 
-var __shadow_color = Color(0, 0, 0, 0.25)
+var __shadow_color = Color(19 / 255.0, 0, 39 / 255.0, 0.5)
 var __shadow_scale = Vector2(1, 1)
 var __sprite_height = 0
 var __shear_mag = 1.0 / 2.0
@@ -47,12 +47,15 @@ func _process(delta):
 	set_scale(__shadow_scale * Vector2(2 * max(1, __shear_mag) * \
 			  sprite_size.y / sprite_size.x, 0.5))
 	
+	var centered_offset = Vector2(0, 0)
+	if(get_parent().is_centered()):
+		centered_offset = -sprite_size / 2
 	if(get_parent().is_flipped_h()): #3 * (-sprite_size.y * __shear_mag) + 1
-		set_pos(Vector2(-2 * max(1, __shear_mag) * sprite_size.y \
+		set_pos(centered_offset + Vector2(-2 * max(1, __shear_mag) * sprite_size.y \
 				+ sprite_size.x + 1, \
 				sprite_size.y - __shadow_scale.y * sprite_size.y * 0.5))
 	else:
-		set_pos(Vector2(-sprite_size.y * __shear_mag - 1, \
+		set_pos(centered_offset + Vector2(-sprite_size.y * __shear_mag - 1, \
 				sprite_size.y - __shadow_scale.y * sprite_size.y * 0.5))
 	get_material().set_shader_param("shadow_color", __shadow_color)
 	get_material().set_shader_param("sprite_pos", \

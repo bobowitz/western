@@ -28,10 +28,13 @@ func hurt(amount):
 	first_hit = get_node("Timer").get_time_left() == 0
 	
 	hp -= amount
-	update()
+	if(hp > full_hp):
+		hp = full_hp
 	get_node("Timer").start()
 	if(hp <= 0):
+		hp = 0
 		emit_signal("killed")
+	update()
 
 func _ready():
 	var parent_width = get_node("../Sprite").get_texture().get_size().x / get_node("../Sprite").get_hframes()
@@ -48,8 +51,8 @@ func _process(delta):
 func _draw():
 	if(get_node("Timer").get_time_left() > 0):
 		draw_rect(Rect2(-bar_width / 2, Y_OFFSET / 2, bar_width, BAR_HEIGHT).grow(OUTLINE_THICKNESS), WorldConstants.OUTLINE_COLOR)
-		draw_rect(Rect2(-bar_width / 2, Y_OFFSET / 2, bar_width, BAR_HEIGHT), Color(1, 0, 0))
-		draw_rect(Rect2(-bar_width / 2, Y_OFFSET / 2, (float(hp) / full_hp) * bar_width, BAR_HEIGHT), Color(0, 1, 0))
+		draw_rect(Rect2(-bar_width / 2, Y_OFFSET / 2, bar_width, BAR_HEIGHT), WorldConstants.HEALTH_RED)
+		draw_rect(Rect2(-bar_width / 2, Y_OFFSET / 2, (float(hp) / full_hp) * bar_width, BAR_HEIGHT), WorldConstants.HEALTH_GREEN)
 
 func _on_timer_timeout():
 	update()

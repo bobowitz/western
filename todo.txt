@@ -8,7 +8,6 @@ npc interactions
 saloon fights
 saloon mobs
 guns
-font
 
 IN PROGRESS
 wasteland mobs (invisible spawners?)
@@ -23,5 +22,6 @@ items
 	blueprints
 	scrap metal
 	bullets
+font (1 done)
 
 DONE

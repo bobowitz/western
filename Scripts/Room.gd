@@ -83,9 +83,39 @@ func set_room_type(r):
 		get_node("Background").set_texture(RoomTextures.wall_destroy_w_tex)
 		get_node("Background").set_flip_h(true)
 
+func pick_object_position():
+	var position = Vector2(0, 0)
+	var too_close = true
+	while(too_close):
+		position = Vector2(floor(rand_range(32, WorldConstants.ROOM_SIZE.x - 32)), \
+						   floor(rand_range(32, WorldConstants.ROOM_SIZE.y - 32)))
+		too_close = false
+		for child in get_children():
+			if(child.is_in_group("env") and child.get_pos().distance_to(position) < 64):
+				too_close = true
+	return position
+
+func add_objects():
+	var cactus_count = randi() % 4
+	for i in range(cactus_count):
+		var cactus = preload("res://Scenes/Objects/Cactus.tscn").instance()
+		cactus.set_pos(pick_object_position())
+		add_child(cactus)
+	var holes_count = randi() % 4
+	for i in range(holes_count):
+		var holes = preload("res://Scenes/Objects/GroundHoles.tscn").instance()
+		holes.set_pos(pick_object_position())
+		add_child(holes)
+	var bush_count = randi() % 4
+	for i in range(bush_count):
+		var bush = preload("res://Scenes/Objects/Bush.tscn").instance()
+		bush.set_pos(pick_object_position())
+		add_child(bush)
+
 func finish_room():
 	if(room_type == WorldConstants.WASTELAND):
 		add_child(preload("res://Scenes/EnemySpawner.tscn").instance())
+		add_objects()
 
 func _ready():
 	screen_hitbox = preload("res://Scenes/Hitboxes/ScreenArea.tscn")

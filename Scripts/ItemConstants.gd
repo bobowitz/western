@@ -6,10 +6,11 @@ extends Node
 # add hitbox extents (Item.gd)
 # actually use item (Item.set_ID())
 
-var ITEMS = 6
+var ITEMS = 7
 var CRATE = 0 # constant refers to frame on tileset
 var CRATE2 = 1
 var CRATE3 = 2
 var CRATE4 = 3
 var CRATE5 = 4
 var BIGCRATE = 5
+var FLASK = 6

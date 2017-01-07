@@ -30,6 +30,12 @@ func __current_overridable_by(name):
 		return false
 	return true
 
+func play_force(name):
+	__stack.clear()
+	__stack.push_front(name)
+	__start_time = OS.get_ticks_msec()
+	__done = false
+
 func play(name):
 	if(not __stack.empty() and __stack[0] == name):
 		return
@@ -54,17 +60,17 @@ func _process(delta):
 		if(__animations[__stack[0]].get_looping()):
 			frameIndex %= __animations[__stack[0]].get_frames().size()
 		else:
-			if(__stack.size() >= 2):
+			if(__stack.size() > 1):
 				__stack.pop_front()
+				frameIndex = 0
 			else:
-				frameIndex = __animations[__stack[0]].get_frames().size() - 1
 				if(not __done):
+					__done = true
 					emit_signal("animation_finished")
-				__done = true
+				frameIndex = __animations[__stack[0]].get_frames().size() - 1
 	var frame = __animations[__stack[0]].get_frames()[frameIndex]
 	get_parent().set_frame(frame)
 	get_parent().set_flip_h(__animations[__stack[0]].get_flipped())
-	return
 
 class Animation:
 	var __frames

@@ -17,8 +17,7 @@ func add_item(item):
 	items[item.ID] += 1
 
 func _ready():
-	var label = Label.new()
-	font = label.get_font("") # TEMPORARY, ADD A REAL FONT LATER
+	font = preload("res://Fonts/western.fnt")
 	
 	items = []
 	for i in range(ItemConstants.ITEMS):
@@ -46,7 +45,7 @@ func _draw():
 		GRID_HEIGHT * (BOX_SIZE.y + GAP_SIZE.y) - GAP_SIZE.y)
 		var index = 0
 		draw_string(font, Vector2(scr_center.x - 32, \
-		scr_center.y - gui_size.y / 2 - 16), "Inventory", Color(1, 1, 1))
+		scr_center.y - gui_size.y / 2 - 16), "Inventory", WorldConstants.OUTLINE_COLOR)
 		
 		draw_rect(Rect2(scr_center - gui_size / 2 - Vector2(BORDER, BORDER), Vector2(BORDER, gui_size.y + BORDER*2)), GUI_COLOR)
 		draw_rect(Rect2(scr_center - gui_size / 2 - Vector2(BORDER, BORDER), Vector2(gui_size.x + BORDER*2, BORDER)), GUI_COLOR)

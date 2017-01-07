@@ -1,12 +1,12 @@
 extends Node2D
 
-var fullscreen = false
+var fullscreen = true
 
 func _ready():
 	var w = WorldConstants.ROOM_SIZE.x
 	var h = WorldConstants.ROOM_SIZE.y
 	
-	self.get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_2D, \
+	self.get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, \
 									   SceneTree.STRETCH_ASPECT_KEEP, WorldConstants.ROOM_SIZE)
 	OS.set_window_fullscreen(fullscreen)
 	if(fullscreen):

@@ -9,6 +9,7 @@ var velocity = Vector2(0, 0)
 var start_velocity_y = 0
 var ground_y = 0
 var spawned = false
+var is_pickup = false # pickups don't go into inventory
 
 func set_ID(id):
 	ID = id
@@ -28,10 +29,21 @@ func set_ID(id):
 		shape.set_extents(Vector2(9, 9))
 	elif(ID == ItemConstants.BIGCRATE):
 		shape.set_extents(Vector2(16, 16))
+	elif(ID == ItemConstants.FLASK):
+		shape.set_extents(Vector2(9, 9))
+		is_pickup = true
 	add_shape(shape)
 
 func get_ID():
 	return ID
+
+func effect(target): # for pickups
+	target.get_node("Health").hurt(-1)
+	var t = preload("res://Scenes/TextParticle.tscn").instance()
+	t.set_text("+1 health")
+	t.set_color(WorldConstants.HEALTH_GREEN)
+	t.set_pos(get_pos() + get_shape(0).get_extents())
+	get_parent().add_child(t)
 
 func despawn(): # if not picked up
 	queue_free()
