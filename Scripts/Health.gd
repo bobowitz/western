@@ -18,6 +18,9 @@ func set_bar_width(w):
 func set_full_hp(val):
 	full_hp = val
 
+func get_full_hp():
+	return full_hp
+
 func set_hp(val):
 	hp = val
 

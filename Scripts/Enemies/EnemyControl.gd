@@ -1,6 +1,7 @@
 extends Node
 
 var SPEED = 100.0
+var FOLLOW_PLAYER_CHANCE = 0.65
 var direction = Vector2(0, 0)
 
 func _ready():
@@ -19,9 +20,9 @@ func _fixed_process(delta):
 		get_parent().move(direction * SPEED * delta)
 		direction = direction.rotated(PI / 2)
 
-func _on_animation_finished():
+func _on_animation_finished(anim):
 	var r = randf()
-	if(r < 0.65):
+	if(r < FOLLOW_PLAYER_CHANCE):
 		direction = (get_node("/root/Game/Player").get_node("Body").get_center() - get_parent().get_center()).normalized()
 	else:
 		direction = Vector2(rand_range(-1, 1), rand_range(-1, 1))

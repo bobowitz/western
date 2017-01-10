@@ -66,10 +66,15 @@ func _process(delta):
 			else:
 				if(not __done):
 					__done = true
-					emit_signal("animation_finished")
+					emit_signal("animation_finished", self)
 				frameIndex = __animations[__stack[0]].get_frames().size() - 1
 	var frame = __animations[__stack[0]].get_frames()[frameIndex]
-	get_parent().set_frame(frame)
+	if(frame == -1):
+		get_parent().set_scale(Vector2(0, 0))
+	else:
+		if(get_parent().get_scale() == Vector2(0, 0)):
+			get_parent().set_scale(Vector2(1, 1))
+		get_parent().set_frame(frame)
 	get_parent().set_flip_h(__animations[__stack[0]].get_flipped())
 
 class Animation:

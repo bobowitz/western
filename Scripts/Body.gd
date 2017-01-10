@@ -4,17 +4,15 @@ func get_center():
 	return get_parent().get_pos() + get_shape(0).get_extents()
 
 func _ready():
-	get_node("../Health").set_full_hp(10)
-	get_node("../Health").set_hp(10)
-	
 	set_fixed_process(true)
 
 func _fixed_process(delta):
 	for body in get_overlapping_bodies():
 		if(body.is_in_group("enemies") and not body.dead):
 			get_node("../PlayerControl").knockback((get_center() - body.get_center()).normalized())
-			get_node("../Health").hurt(1)
+			get_node("../Health").hurt(body.damage)
 			get_node("../InvulnTimer").start()
+			#invuln
 			set_collision_mask_bit(4, false) # don't collide with enemies
 			set_collision_mask_bit(5, false) # don't collide with enemy bullets
 		if(body.is_in_group("items")):

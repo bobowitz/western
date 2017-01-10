@@ -16,6 +16,7 @@ script/script = ExtResource( 1 )
 
 [node name="Sprite" type="Sprite" parent="."]
 
+z/z = 1
 texture = ExtResource( 2 )
 vframes = 10
 hframes = 10
@@ -32,7 +33,7 @@ autostart = false
 process_mode = 1
 wait_time = 1e-06
 one_shot = true
-autostart = true
+autostart = false
 
 [connection signal="timeout" from="DespawnTimer" to="." method="_on_timer_timeout"]
 

@@ -3,13 +3,23 @@ extends StaticBody2D
 var GRAVITY = 2000.0
 var FLICKER_TIME = 2.0 # seconds
 var FLICKER_SPEED = 10 # milliseconds
-var ID = ItemConstants.CRATE
+var ID = 0
 var kill_anim
 var velocity = Vector2(0, 0)
 var start_velocity_y = 0
 var ground_y = 0
 var spawned = false
 var is_pickup = false # pickups don't go into inventory
+var equippable = false
+var is_gun = false
+var gun_stats
+var amount = 0 # for money and ammo
+
+func set_amount(a):
+	amount = a
+
+func get_amount():
+	return amount
 
 func set_ID(id):
 	ID = id
@@ -17,33 +27,80 @@ func set_ID(id):
 	
 	clear_shapes()
 	var shape = RectangleShape2D.new()
-	if(ID == ItemConstants.CRATE):
-		shape.set_extents(Vector2(9, 9))
-	elif(ID == ItemConstants.CRATE2):
-		shape.set_extents(Vector2(9, 9))
-	elif(ID == ItemConstants.CRATE3):
-		shape.set_extents(Vector2(9, 9))
-	elif(ID == ItemConstants.CRATE4):
-		shape.set_extents(Vector2(9, 9))
-	elif(ID == ItemConstants.CRATE5):
-		shape.set_extents(Vector2(9, 9))
-	elif(ID == ItemConstants.BIGCRATE):
-		shape.set_extents(Vector2(16, 16))
-	elif(ID == ItemConstants.FLASK):
+	if(ID == ItemConstants.AMMO):
 		shape.set_extents(Vector2(9, 9))
 		is_pickup = true
+	if(ID == ItemConstants.MONEY):
+		shape.set_extents(Vector2(9, 9))
+		is_pickup = true
+	elif(ID == ItemConstants.WHISKY):
+		shape.set_extents(Vector2(9, 9))
+		is_pickup = true
+	if(ID == ItemConstants.WATERMELON):
+		shape.set_extents(Vector2(9, 9))
+		is_pickup = true
+	elif(ID == ItemConstants.REVOLVER_TINY):
+		shape.set_extents(Vector2(9, 9))
+		equippable = true
+		is_gun = true
+	elif(ID == ItemConstants.REVOLVER_SMALL):
+		shape.set_extents(Vector2(9, 9))
+		equippable = true
+		is_gun = true
+	elif(ID == ItemConstants.REVOLVER_MEDIUM):
+		shape.set_extents(Vector2(9, 9))
+		equippable = true
+		is_gun = true
+	elif(ID == ItemConstants.REVOLVER_LARGE):
+		shape.set_extents(Vector2(9, 9))
+		equippable = true
+		is_gun = true
+	elif(ID == ItemConstants.REVOLVER_HUGE):
+		shape.set_extents(Vector2(9, 9))
+		equippable = true
+		is_gun = true
+	elif(ID == ItemConstants.BANANA):
+		shape.set_extents(Vector2(9, 9))
+		equippable = true
+		is_gun = true
 	add_shape(shape)
+	
+	if(is_gun):
+		get_node("Sprite").set_texture(preload("res://Sprites/guniconset.png"))
+		get_node("Sprite").set_frame(ID - ItemConstants.FIRST_GUN)
 
 func get_ID():
 	return ID
 
 func effect(target): # for pickups
-	target.get_node("Health").hurt(-1)
-	var t = preload("res://Scenes/TextParticle.tscn").instance()
-	t.set_text("+1 health")
-	t.set_color(WorldConstants.HEALTH_GREEN)
-	t.set_pos(get_pos() + get_shape(0).get_extents())
-	get_parent().add_child(t)
+	if(ID == ItemConstants.WHISKY):
+		target.get_node("Health").hurt(-amount)
+		var t = preload("res://Scenes/TextParticle.tscn").instance()
+		t.set_text("+" + str(amount) + " health")
+		t.set_color(WorldConstants.HEALTH_GREEN)
+		t.set_pos(get_pos() + get_shape(0).get_extents())
+		get_parent().add_child(t)
+	elif(ID == ItemConstants.WATERMELON):
+		target.get_node("Health").hurt(-amount)
+		var t = preload("res://Scenes/TextParticle.tscn").instance()
+		t.set_text("+" + str(amount) + " health")
+		t.set_color(WorldConstants.HEALTH_GREEN)
+		t.set_pos(get_pos() + get_shape(0).get_extents())
+		get_parent().add_child(t)
+	elif(ID == ItemConstants.AMMO):
+		target.get_node("HUD/Inventory").add_ammo(amount)
+		var t = preload("res://Scenes/TextParticle.tscn").instance()
+		t.set_text("+" + str(amount) + " ammo")
+		t.set_color(WorldConstants.HIGHLIGHT_COLOR)
+		t.set_pos(get_pos() + get_shape(0).get_extents())
+		get_parent().add_child(t)
+	elif(ID == ItemConstants.MONEY):
+		target.get_node("HUD/Inventory").add_money(amount)
+		var t = preload("res://Scenes/TextParticle.tscn").instance()
+		t.set_text("+" + str(amount) + " dollars")
+		t.set_color(WorldConstants.HIGHLIGHT_COLOR)
+		t.set_pos(get_pos() + get_shape(0).get_extents())
+		get_parent().add_child(t)
 
 func despawn(): # if not picked up
 	queue_free()
@@ -63,6 +120,7 @@ func set_spawn_delay(delay):
 	if(delay < 0.01):
 		delay = 0.01
 	get_node("SpawnDelayTimer").set_wait_time(delay)
+	get_node("SpawnDelayTimer").start()
 
 func spawn():
 	get_node("DespawnTimer").start()

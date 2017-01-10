@@ -3,6 +3,7 @@ extends Node
 var INNS = 1
 var SALOONS = 3
 
+var town_name = ""
 var loc = Vector2(0, 0) # location on grid, in units of areas
 						# position of actual area object is always 0, 0
 var room_transform = Vector2(0, 0)
@@ -128,10 +129,11 @@ func add_corners():
 
 func add_walls():
 	add_corners()
-	add_walls_on_side(Vector2(0, -1))
-	add_walls_on_side(Vector2(0, 1))
-	add_walls_on_side(Vector2(-1, 0))
-	add_walls_on_side(Vector2(1, 0))
+	if(branching_dir != Vector2(0, 0)):
+		add_walls_on_side(Vector2(0, -1))
+		add_walls_on_side(Vector2(0, 1))
+		add_walls_on_side(Vector2(-1, 0))
+		add_walls_on_side(Vector2(1, 0))
 	
 	finish_rooms()
 

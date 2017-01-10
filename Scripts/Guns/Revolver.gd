@@ -1,47 +1,19 @@
 extends Sprite
 
-var x_offset = 16
-var bullet
-var angle = 0
-var recoil = 0
-
 func shoot():
-	var b = bullet.instance()
-	b.set_pos(get_parent().get_pos() + get_pos() + Vector2(0, x_offset).rotated(angle + PI))
-	b.set_direction(angle)
+	var b = preload("res://Scenes/Bullet.tscn").instance()
+	b.set_pos(get_parent().get_pos() + get_pos() + Vector2(0, get_node("WeaponControl").x_offset).rotated(get_node("WeaponControl").angle + PI))
+	b.set_damage(get_node("WeaponStats")._damage)
+	b.set_luck(get_node("WeaponStats")._luck)
+	b.set_direction(get_node("WeaponControl").angle)
 	b.add_to_group("bullets")
 	get_node("/root/Game/World").add_child(b)
 	
-	recoil = 1
-	get_parent().move(-Vector2(0, 4).rotated(angle + PI))
+	# knockback
+	get_parent().move(-Vector2(0, get_node("WeaponStats")._knockback).rotated(get_node("WeaponControl").angle + PI))
 	
-	get_node("/root/Game/Camera").shake(Vector2(0, 5).rotated(angle + PI))
-
-func _ready():
-	bullet = preload("res://Scenes/Bullet.tscn")
+	# recoil
+	get_node("WeaponControl").recoil = 1
 	
-	set_fixed_process(true)
-	get_node("../PlayerControl").connect("player_control_input", self, "_on_player_control_input")
-
-func _fixed_process(delta):
-	angle = (get_pos() + get_parent().get_pos()). \
-	angle_to_point(get_viewport().get_mouse_pos() + get_node("/root/Game/Camera").get_pixel_pos())
-	if(-PI / 2 < angle and angle < PI / 2):
-		set_z(-1)
-	else:
-		set_z(0)
-	if(angle > 0):
-		set_rot(angle - PI / 2 - recoil * PI / 8)
-		var width = get_texture().get_width() / get_hframes()
-		set_flip_h(true)
-		set_offset(Vector2(-x_offset - width + recoil * 8, -16))
-	else:
-		set_rot(angle + PI / 2 + recoil * PI / 8)
-		set_flip_h(false)
-		set_offset(Vector2(x_offset - recoil * 8, -16))
-	recoil *= 0.85
-
-func _on_player_control_input(event):
-	if event.type == InputEvent.MOUSE_BUTTON:
-		if event.button_index == BUTTON_LEFT and event.pressed:
-				shoot()
+	# camera shake
+	get_node("/root/Game/Camera").shake(Vector2(0, 5).rotated(get_node("WeaponControl").angle + PI))

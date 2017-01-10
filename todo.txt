@@ -2,7 +2,6 @@ TO DO
 wasteland variations
 	cactuses
 	cow skulls
-wall collision
 destructible walls
 npc interactions
 saloon fights
@@ -25,3 +24,4 @@ items
 font (1 done)
 
 DONE
+wall collision

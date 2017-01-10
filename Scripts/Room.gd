@@ -38,29 +38,41 @@ func get_room_type():
 
 func set_room_type(r):
 	room_type = r
+
+func finish_room_type():
+	var r = room_type
 	if(r == WorldConstants.SALOON):
 		get_node("Background").set_texture(RoomTextures.saloon_tex)
-		add_child(Hitboxes.saloon.instance())
-		add_child(Hitboxes.saloon_bullet.instance())
+		add_child(preload("res://Scenes/Hitboxes/Saloon.tscn").instance())
+		add_child(preload("res://Scenes/Hitboxes/SaloonBullet.tscn").instance())
+		add_child(preload("res://Scenes/Hitboxes/SaloonDoor.tscn").instance())
 	elif(r == WorldConstants.INN):
 		get_node("Background").set_texture(RoomTextures.inn_tex)
 	elif(r == WorldConstants.WALL_N):
+		add_child(preload("res://Scenes/Hitboxes/WallN.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_n_tex)
 	elif(r == WorldConstants.WALL_NW):
+		add_child(preload("res://Scenes/Hitboxes/WallNW.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_nw_tex)
 	elif(r == WorldConstants.WALL_W):
+		add_child(preload("res://Scenes/Hitboxes/WallW.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_w_tex)
 	elif(r == WorldConstants.WALL_SW):
+		add_child(preload("res://Scenes/Hitboxes/WallSW.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_sw_tex)
 	elif(r == WorldConstants.WALL_S):
+		add_child(preload("res://Scenes/Hitboxes/WallS.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_s_tex)
 	elif(r == WorldConstants.WALL_SE):
+		add_child(preload("res://Scenes/Hitboxes/WallSE.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_sw_tex)
 		get_node("Background").set_flip_h(true)
 	elif(r == WorldConstants.WALL_E):
+		add_child(preload("res://Scenes/Hitboxes/WallE.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_w_tex)
 		get_node("Background").set_flip_h(true)
 	elif(r == WorldConstants.WALL_NE):
+		add_child(preload("res://Scenes/Hitboxes/WallNE.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_nw_tex)
 		get_node("Background").set_flip_h(true)
 	elif(r == WorldConstants.WALL_CORNER_NW):
@@ -74,12 +86,16 @@ func set_room_type(r):
 		get_node("Background").set_texture(RoomTextures.wall_corner_nw_tex)
 		get_node("Background").set_flip_h(true)
 	elif(r == WorldConstants.WALL_DESTROY_N):
+		add_child(preload("res://Scenes/Hitboxes/WallDestroyN.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_destroy_n_tex)
 	elif(r == WorldConstants.WALL_DESTROY_W):
+		add_child(preload("res://Scenes/Hitboxes/WallDestroyW.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_destroy_w_tex)
 	elif(r == WorldConstants.WALL_DESTROY_S):
+		add_child(preload("res://Scenes/Hitboxes/WallDestroyS.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_destroy_s_tex)
 	elif(r == WorldConstants.WALL_DESTROY_E):
+		add_child(preload("res://Scenes/Hitboxes/WallDestroyE.tscn").instance())
 		get_node("Background").set_texture(RoomTextures.wall_destroy_w_tex)
 		get_node("Background").set_flip_h(true)
 
@@ -113,6 +129,8 @@ func add_objects():
 		add_child(bush)
 
 func finish_room():
+	finish_room_type()
+	
 	if(room_type == WorldConstants.WASTELAND):
 		add_child(preload("res://Scenes/EnemySpawner.tscn").instance())
 		add_objects()

@@ -1,6 +1,6 @@
 extends Node
 
-var MAX_ENEMIES = 5
+var MAX_ENEMIES = 8
 var MIN_ENEMIES = 0
 
 func place_enemies():

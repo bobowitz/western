@@ -5,6 +5,7 @@ var old_area_index = 0 # for transitions
 var current_area_index = 0
 var area_count = 15
 var current_room
+var area_change_room_translate = Vector2(0, 0) # for exiting an area diagonally
 
 func get_current_room():
 	return areas[current_area_index].get_current_room()
@@ -60,30 +61,35 @@ func generate_world():
 	var homeNode = area.instance()
 	homeNode.set_loc(center)
 	homeNode.set_name("Area0")
+	homeNode.town_name = homeNode.get_name()
 	homeNode.set_branched(true)
 	areas.push_back(homeNode)
 	
 	var leftNode = area.instance()
 	leftNode.set_loc(center + Vector2(-1, 0))
 	leftNode.set_name("Area1")
+	leftNode.town_name = leftNode.get_name()
 	leftNode.branched_dir = Vector2(-1, 0)
 	areas.push_back(leftNode)
 	
 	var rightNode = area.instance()
 	rightNode.set_loc(center + Vector2(1, 0))
 	rightNode.set_name("Area2")
+	rightNode.town_name = rightNode.get_name()
 	rightNode.branched_dir = Vector2(1, 0)
 	areas.push_back(rightNode)
 	
 	var upNode = area.instance()
 	upNode.set_loc(center + Vector2(0, -1))
 	upNode.set_name("Area3")
+	upNode.town_name = upNode.get_name()
 	upNode.branched_dir = Vector2(0, -1)
 	areas.push_back(upNode)
 	
 	var downNode = area.instance()
 	downNode.set_loc(center + Vector2(0, 1))
 	downNode.set_name("Area4")
+	downNode.town_name = downNode.get_name()
 	downNode.branched_dir = Vector2(0, 1)
 	areas.push_back(downNode)
 	
@@ -113,6 +119,7 @@ func generate_world():
 				var node = area.instance()
 				node.set_loc(new_node_loc)
 				node.set_name("Area" + str(count))
+				node.town_name = node.get_name()
 				node.branched_dir = direction
 				areas.push_back(node)
 				
@@ -172,7 +179,8 @@ func _on_area_body_exit(body):
 			out_dir.x = -1
 		if(r.get_node("OutOfBoundsRight").overlaps_body(player)):
 			out_dir.x = 1
-		var out_of_area = areas[current_area_index].check_out_of_area(-out_dir)
+		var out_of_area = areas[current_area_index].check_out_of_area(Vector2(0, -out_dir.y)) or \
+						  areas[current_area_index].check_out_of_area(Vector2(-out_dir.x, 0))
 		if(not out_of_area):
 			player.translate(out_dir * Vector2(32, 32))
 			r.get_node("ScreenArea").disconnect("body_exit", self, "_on_area_body_exit")
@@ -182,13 +190,20 @@ func _on_area_body_exit(body):
 			areas[current_area_index].get_current_room().get_node("ScreenArea").connect("body_exit", self, "_on_area_body_exit")
 			areas[current_area_index].get_current_room()._on_room_enter()
 		else:
+			area_change_room_translate = Vector2(0, 0)
+			if(areas[current_area_index].check_out_of_area(Vector2(0, -out_dir.y))):
+				area_change_room_translate.x = out_dir.x
+				out_dir = Vector2(0, out_dir.y)
+			elif(areas[current_area_index].check_out_of_area(Vector2(-out_dir.x, 0))):
+				area_change_room_translate.y = out_dir.y
+				out_dir = Vector2(out_dir.x, 0)
 			for i in range(area_count): # find correct area
 				if(areas[current_area_index].get_loc() + out_dir == areas[i].get_loc()):
 					areas[old_area_index].get_current_room().get_node("ScreenArea").disconnect("body_exit", self, "_on_area_body_exit")
 					old_area_index = current_area_index
 					current_area_index = i
 					delay_out_dir = out_dir
-					
+									
 					get_node("Transition").start()
 					get_node("../Player/PlayerControl").freeze()
 					break
@@ -200,7 +215,7 @@ func _on_transition_dark():
 	
 	old_area_index = current_area_index
 	
-	get_node("/root/Game/Camera").move_rooms(-delay_out_dir * (WorldConstants.AREA_SIZE - Vector2(1, 1)))
+	get_node("/root/Game/Camera").move_rooms(-delay_out_dir * (WorldConstants.AREA_SIZE - Vector2(1, 1)) + area_change_room_translate)
 	
 	add_child(areas[current_area_index])
 	areas[current_area_index].add_area_hitboxes()
@@ -210,6 +225,9 @@ func _on_transition_dark():
 
 func _on_transition_done():
 	get_node("../Player/PlayerControl").unfreeze()
+	var greeting = preload("res://Scenes/Greeting.tscn").instance()
+	greeting.set_text(areas[current_area_index].town_name)
+	add_child(greeting)
 
 func _on_camera_tween_finished():
 	get_node("../Player/PlayerControl").unfreeze()

@@ -1,0 +1,17 @@
+[gd_scene load_steps=4 format=1]
+
+[ext_resource path="res://Sprites/mobset.png" type="Texture" id=1]
+[ext_resource path="res://Scripts/EnemyKillAnimated.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Animation.tscn" type="PackedScene" id=3]
+
+[node name="EnemyKillAnimated" type="Sprite"]
+
+texture = ExtResource( 1 )
+centered = false
+vframes = 48
+hframes = 32
+script/script = ExtResource( 2 )
+
+[node name="Animation" parent="." instance=ExtResource( 3 )]
+
+

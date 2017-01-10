@@ -1,6 +1,7 @@
 extends Node
 
 var OUTLINE_COLOR = Color("311f2f")
+var HIGHLIGHT_COLOR = Color("ffffff")
 var HEALTH_GREEN = Color("55c477")
 var HEALTH_RED = Color("ff4466")
 var ROOM_SIZE = Vector2(576, 384)

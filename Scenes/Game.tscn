@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=1]
+[gd_scene load_steps=6 format=1]
 
 [ext_resource path="res://Scripts/Game.gd" type="Script" id=1]
 [ext_resource path="res://Scripts/Camera.gd" type="Script" id=2]
 [ext_resource path="res://Scenes/World.tscn" type="PackedScene" id=3]
-[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Sprites/fxset.png" type="Texture" id=4]
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=5]
 
 [node name="Game" type="Node2D"]
 
@@ -23,24 +24,25 @@ playback/speed = 1.0
 
 [node name="World" parent="." instance=ExtResource( 3 )]
 
-[node name="hud" type="CanvasLayer" parent="."]
+transform/pos = Vector2( -1, 1 )
 
-editor/display_folded = true
-layer = 1
+[node name="overlay" type="CanvasLayer" parent="."]
+
+layer = 10
 offset = Vector2( 0, 0 )
 rotation = 0.0
 scale = Vector2( 1, 1 )
 
-[node name="fps" type="Label" parent="hud"]
+[node name="fps" type="Label" parent="overlay"]
 
 focus/ignore_mouse = true
 focus/stop_mouse = true
 size_flags/horizontal = 2
 size_flags/vertical = 0
-margin/left = 1.0
-margin/top = 1.0
-margin/right = 41.0
-margin/bottom = 15.0
+margin/left = 530.0
+margin/top = 9.0
+margin/right = 570.0
+margin/bottom = 23.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_as_outline = 1
@@ -49,7 +51,14 @@ percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1
 
-[node name="Player" parent="." instance=ExtResource( 4 )]
+[node name="Crosshair" type="Sprite" parent="overlay"]
+
+texture = ExtResource( 4 )
+vframes = 30
+hframes = 40
+frame = 40
+
+[node name="Player" parent="." instance=ExtResource( 5 )]
 
 transform/pos = Vector2( 146.008, 102.411 )
 

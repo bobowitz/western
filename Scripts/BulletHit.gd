@@ -7,8 +7,8 @@ func kill():
 func _ready():
 	get_node("Animation").connect("animation_finished", self, "_on_animation_finished")
 	
-	get_node("Animation").add_animation("pop", range(44, 48), 20, false)
+	get_node("Animation").add_animation("pop", range(1, 5), 15, false)
 	get_node("Animation").play("pop")
 
-func _on_animation_finished():
+func _on_animation_finished(anim):
 	kill()
