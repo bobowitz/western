@@ -9,9 +9,6 @@ func shoot():
 	b.add_to_group("bullets")
 	get_node("/root/Game/World").add_child(b)
 	
-	# knockback
-	get_parent().move(-Vector2(0, get_node("WeaponStats")._knockback).rotated(get_node("WeaponControl").angle + PI))
-	
 	# recoil
 	get_node("WeaponControl").recoil = 1
 	

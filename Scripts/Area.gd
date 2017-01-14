@@ -3,7 +3,10 @@ extends Node
 var INNS = 1
 var SALOONS = 3
 
+var WASTELAND_CHANCE = 0.1
+
 var town_name = ""
+var town_type = WorldConstants.TOWN_NORMAL
 var loc = Vector2(0, 0) # location on grid, in units of areas
 						# position of actual area object is always 0, 0
 var room_transform = Vector2(0, 0)
@@ -45,7 +48,7 @@ func set_branched(b):
 	branched = b
 
 func pick_room():
-	var radius = 1
+	var radius = 0
 	
 	var room_pos
 	while true:
@@ -143,5 +146,9 @@ func _init():
 	var room = preload("res://Scenes/Room.tscn")
 	
 	fill_wastelands(room)
-	place_saloons(room)
-	place_inns(room)
+	var r = randf()
+	if(r < WASTELAND_CHANCE):
+		town_type = WorldConstants.TOWN_WASTELAND
+	else:
+		place_saloons(room)
+		place_inns(room)

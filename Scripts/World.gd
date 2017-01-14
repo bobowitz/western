@@ -5,7 +5,8 @@ var old_area_index = 0 # for transitions
 var current_area_index = 0
 var area_count = 15
 var current_room
-var area_change_room_translate = Vector2(0, 0) # for exiting an area diagonally
+var left_area = false
+var in_building = false
 
 func get_current_room():
 	return areas[current_area_index].get_current_room()
@@ -120,6 +121,8 @@ func generate_world():
 				node.set_loc(new_node_loc)
 				node.set_name("Area" + str(count))
 				node.town_name = node.get_name()
+				if(node.town_type == WorldConstants.TOWN_WASTELAND):
+					node.town_name = "Wasteland"
 				node.branched_dir = direction
 				areas.push_back(node)
 				
@@ -133,8 +136,7 @@ func generate_world():
 			i += 1
 		else:
 			i -= 1
-	if(count != area_count):
-		print("FAILED TO GENERATE AREAS, COUNT != AREA_COUNT")
+	assert(count == area_count)
 
 func clear_world():
 	for i in range(area_count):
@@ -170,17 +172,11 @@ func _on_area_body_exit(body):
 	var player = get_node("/root/Game/Player")
 	var r = areas[current_area_index].get_current_room()
 	if(body == player):
-		var out_dir = Vector2(0, 0)
-		if(r.get_node("OutOfBoundsUp").overlaps_body(player)):
-			out_dir.y = -1
-		if(r.get_node("OutOfBoundsDown").overlaps_body(player)):
-			out_dir.y = 1
-		if(r.get_node("OutOfBoundsLeft").overlaps_body(player)):
-			out_dir.x = -1
-		if(r.get_node("OutOfBoundsRight").overlaps_body(player)):
-			out_dir.x = 1
-		var out_of_area = areas[current_area_index].check_out_of_area(Vector2(0, -out_dir.y)) or \
-						  areas[current_area_index].check_out_of_area(Vector2(-out_dir.x, 0))
+		left_area = true
+		
+		var out_dir = player.get_node("PlayerControl").direction_last_moved
+		
+		var out_of_area = areas[current_area_index].check_out_of_area(-out_dir)
 		if(not out_of_area):
 			player.translate(out_dir * Vector2(32, 32))
 			r.get_node("ScreenArea").disconnect("body_exit", self, "_on_area_body_exit")
@@ -190,13 +186,6 @@ func _on_area_body_exit(body):
 			areas[current_area_index].get_current_room().get_node("ScreenArea").connect("body_exit", self, "_on_area_body_exit")
 			areas[current_area_index].get_current_room()._on_room_enter()
 		else:
-			area_change_room_translate = Vector2(0, 0)
-			if(areas[current_area_index].check_out_of_area(Vector2(0, -out_dir.y))):
-				area_change_room_translate.x = out_dir.x
-				out_dir = Vector2(0, out_dir.y)
-			elif(areas[current_area_index].check_out_of_area(Vector2(-out_dir.x, 0))):
-				area_change_room_translate.y = out_dir.y
-				out_dir = Vector2(out_dir.x, 0)
 			for i in range(area_count): # find correct area
 				if(areas[current_area_index].get_loc() + out_dir == areas[i].get_loc()):
 					areas[old_area_index].get_current_room().get_node("ScreenArea").disconnect("body_exit", self, "_on_area_body_exit")
@@ -209,19 +198,22 @@ func _on_area_body_exit(body):
 					break
 
 func _on_transition_dark():
-	areas[old_area_index].get_current_room()._on_room_leave()
-	areas[old_area_index].remove_area_hitboxes()
-	remove_child(areas[old_area_index])
-	
-	old_area_index = current_area_index
-	
-	get_node("/root/Game/Camera").move_rooms(-delay_out_dir * (WorldConstants.AREA_SIZE - Vector2(1, 1)) + area_change_room_translate)
-	
-	add_child(areas[current_area_index])
-	areas[current_area_index].add_area_hitboxes()
-	areas[current_area_index].get_current_room().get_node("ScreenArea").connect("body_exit", self, "_on_area_body_exit")
-	areas[current_area_index].get_current_room()._on_room_enter()
-	get_node("/root/Game/Player").translate(-delay_out_dir * (WorldConstants.ROOM_SIZE * WorldConstants.AREA_SIZE - Vector2(32, 32)))
+	if(left_area):
+		areas[old_area_index].get_current_room()._on_room_leave()
+		areas[old_area_index].remove_area_hitboxes()
+		remove_child(areas[old_area_index])
+		
+		old_area_index = current_area_index
+		
+		get_node("/root/Game/Camera").move_rooms(-delay_out_dir * (WorldConstants.AREA_SIZE - Vector2(1, 1)))
+		
+		add_child(areas[current_area_index])
+		areas[current_area_index].add_area_hitboxes()
+		areas[current_area_index].get_current_room().get_node("ScreenArea").connect("body_exit", self, "_on_area_body_exit")
+		areas[current_area_index].get_current_room()._on_room_enter()
+		get_node("/root/Game/Player").translate(-delay_out_dir * (WorldConstants.ROOM_SIZE * WorldConstants.AREA_SIZE - Vector2(32, 32)))
+		
+		left_area = false
 
 func _on_transition_done():
 	get_node("../Player/PlayerControl").unfreeze()

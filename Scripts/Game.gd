@@ -1,6 +1,6 @@
 extends Node2D
 
-var fullscreen = true
+var fullscreen = false
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -19,7 +19,7 @@ func _ready():
 	set_process(true)
 
 func _process(delta):
-	get_node("overlay/fps").set_text(str(OS.get_frames_per_second()))
+	get_node("overlay/fps").set_text("Western Alpha\n" + str(OS.get_frames_per_second()) + " fps")
 	get_node("overlay/Crosshair").set_pos(get_viewport().get_mouse_pos())
 	if(Input.is_key_pressed(KEY_ESCAPE)):
 		get_tree().quit()

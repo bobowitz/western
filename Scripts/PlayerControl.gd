@@ -8,7 +8,9 @@ signal player_control_input
 var frozen = false
 var speed = 150.0
 var direction = Vector2(0, 0)
+var direction_last_moved = Vector2(0, 0)
 var knockback_velocity = Vector2(0, 0)
+var priority_vert = false
 
 func set_speed(s):
 	speed = s
@@ -37,6 +39,10 @@ func knockback(knock_dir):
 func _input(event):
 	if(not frozen):
 		emit_signal("player_control_input", event)
+	if(event.is_action_pressed("player_up") or event.is_action_pressed("player_down")):
+		priority_vert = true
+	elif(event.is_action_pressed("player_left") or event.is_action_pressed("player_right")):
+		priority_vert = false
 
 func _fixed_process(delta):
 	get_parent().move(knockback_velocity * delta)
@@ -53,11 +59,16 @@ func _fixed_process(delta):
 		if(Input.is_key_pressed(KEY_D)):
 			translate += Vector2(1, 0)
 		if(abs(translate.x) + abs(translate.y) == 2):
-			translate.y = 0
+			if(priority_vert):
+				translate.x = 0
+			else:
+				translate.y = 0
 		direction = translate
+		if(direction != Vector2(0, 0)):
+			direction_last_moved = direction
 		translate = translate.normalized()
 		if(Input.is_key_pressed(KEY_SHIFT)):
-			get_parent().move(2 * translate * speed * delta)
+			get_parent().move(translate * speed * delta * 4)
 		else:
 			get_parent().move(translate * speed * delta)
 		if(translate.x > 0):

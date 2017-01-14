@@ -21,7 +21,8 @@ func spawn_items():
 		var drop_table = [0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 3]
 		var r = drop_table[randi() % drop_table.size()]
 		inst.set_ID(r)
-		inst.set_ID(r)
+		#inst.gun_stats = preload("res://Scenes/Guns/WeaponStats.tscn").instance()
+		#inst.gun_stats.set_stats(rand_range(1, 11), 1, rand_range(0.1, 1.0), 4, rand_range(5, 25), rand_range(100, 200), false, false, false, false, false, false, 1)
 		if(r == ItemConstants.AMMO):
 			inst.set_amount(1000)
 		if(r == ItemConstants.MONEY):
@@ -35,7 +36,7 @@ func spawn_items():
 func kill():
 	spawn_items()
 	
-	var k = preload("res://Scenes/EnemyKillAnimated.tscn").instance()
+	var k = preload("res://Scenes/EnemyKill.tscn").instance()
 	k.set_texture(get_node("Sprite").get_texture())
 	k.set_vframes(get_node("Sprite").get_vframes())
 	k.set_hframes(get_node("Sprite").get_hframes())
@@ -47,6 +48,7 @@ func kill():
 	get_parent().remove_child(self)
 
 func hit(bullet):
+	get_node("EnemyControl").hostile = true
 	get_node("Sprite").flash()
 	get_node("Health").hurt(bullet.get_damage())
 	drop_luck = bullet.get_luck()

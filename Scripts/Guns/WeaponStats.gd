@@ -2,8 +2,8 @@ extends Node
 
 var _damage = 1
 var _ammo_per_shot = 1
-var _fire_rate = 0.5
-var _health = 11
+var _fire_rate = 0.15
+var _health = 3
 var _movement_speed = 150.0
 var _hold_to_shoot = false
 var _fire = false
@@ -11,14 +11,12 @@ var _explosion = false
 var _clone = false
 var _pass_through = false
 var _sticky_bullets = false
-var _knockback = 4
 var _luck = 1
 
 func copy_stats(stats):
 	_damage = stats._damage
 	_ammo_per_shot = stats._ammo_per_shot
 	_fire_rate = stats._fire_rate
-	_knockback = stats._knockback
 	_health = stats._health
 	_movement_speed = stats._movement_speed
 	_fire = stats._fire
@@ -29,11 +27,10 @@ func copy_stats(stats):
 	_hold_to_shoot = stats._hold_to_shoot
 	_luck = stats._luck
 
-func set_stats(damage, ammo_per_shot, fire_rate, knockback, health, movement_speed, fire, explosion, clone, pass_through, sticky_bullets, hold_to_shoot, luck):
+func set_stats(damage, ammo_per_shot, fire_rate, health, movement_speed, fire, explosion, clone, pass_through, sticky_bullets, hold_to_shoot, luck):
 	_damage = floor(damage)
 	_ammo_per_shot = floor(ammo_per_shot)
 	_fire_rate = fire_rate
-	_knockback = floor(knockback)
 	_health = floor(health)
 	_movement_speed = floor(movement_speed)
 	_fire = fire

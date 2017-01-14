@@ -104,7 +104,6 @@ margin/top = 0.0
 margin/right = 40.0
 margin/bottom = 14.0
 custom_fonts/font = ExtResource( 9 )
-text = "It is a long established fact that a reader will be \ndistracted by the readable content of a page when looking at its\n layout. The point of using Lorem Ipsum is that \nit has a more-or-less normal distribution of lette\nrs, as opposed to using \'Content here, content h\nere\', making it look like readable English. Many d\nesktop publishing packages and web page editors\n now use Lorem Ipsum as their default model text\n\n, and a search for \'lorem ipsum\' will uncover many \nweb sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like)."
 percent_visible = 1.0
 lines_skipped = 0
 max_lines_visible = -1

@@ -17,6 +17,10 @@ var __start_time = 0 # when was the animation started
 var __nl_overridable = false # if this is false, you cannot add a looping
 							 # animation on top of a non-looping one
 var __done = false # for non-looping animations: is it done
+var __flipping_enabled = true
+
+func disable_flipping():
+	__flipping_enabled = false
 
 func add_animation(name, frames, fps, looping, flipped=false):
 	__animations[name] = Animation.new(frames, fps, looping, flipped)
@@ -75,7 +79,8 @@ func _process(delta):
 		if(get_parent().get_scale() == Vector2(0, 0)):
 			get_parent().set_scale(Vector2(1, 1))
 		get_parent().set_frame(frame)
-	get_parent().set_flip_h(__animations[__stack[0]].get_flipped())
+	if(__flipping_enabled):
+		get_parent().set_flip_h(__animations[__stack[0]].get_flipped())
 
 class Animation:
 	var __frames

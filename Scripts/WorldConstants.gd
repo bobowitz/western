@@ -6,11 +6,14 @@ var HEALTH_GREEN = Color("55c477")
 var HEALTH_RED = Color("ff4466")
 var ROOM_SIZE = Vector2(576, 384)
 
-var AREA_W = 8
-var AREA_H = 8
+var AREA_W = 5
+var AREA_H = 5
 var AREA_SIZE = Vector2(AREA_W, AREA_H)
 
-var ENEMY_AREA = Rect2(64, 64, ROOM_SIZE.x - 64 * 2, ROOM_SIZE.y - 64 * 2)
+var TOWN_NORMAL = 0
+var TOWN_WASTELAND = 1
+
+var ENEMY_AREA = Rect2(128, 128, ROOM_SIZE.x - 128 * 2, ROOM_SIZE.y - 128 * 2)
 
 var WASTELAND = 0
 var SALOON = 1
